@@ -20,6 +20,7 @@ import LoadingButton from "@/components/ui/LoadingButton";
 import EmailInput from "@/components/auth/EmailInput";
 import PasswordInput from "@/components/auth/PasswordInput";
 import AuthLinkPrompt from "@/components/auth/AuthLinkPrompt";
+import AuthHeader from "@/components/auth/AuthHeader";
 
 interface RegisterFormData {
   name: string;
@@ -160,24 +161,7 @@ const Register = () => {
     <Stack height="100vh" alignItems="center" justifyContent="center">
       <Stack gap={3} p={2} width={{ xs: "90%", md: "500px" }}>
         {/* Header */}
-        <Stack
-          direction="row"
-          alignItems="center"
-          gap={2}
-          borderBottom={"3px double #b89f6a"}
-          p={1}
-        >
-          <Typography
-            variant="h3"
-            color="#b89f6a"
-            component="a"
-            href="/"
-            sx={{ textDecoration: "none" }}
-          >
-            Chatify
-          </Typography>
-          <Typography variant="h5">Register</Typography>
-        </Stack>
+        <AuthHeader title="Register" />
 
         {/* Alerts */}
         {formError && (

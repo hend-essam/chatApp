@@ -51,7 +51,7 @@ const Login = () => {
       if (response.data.success) {
         setSuccessMessage("✅ Login successful! Redirecting...");
         setTimeout(() => {
-          router.push("/");
+          router.push("/main");
           router.refresh();
         }, 1500);
       } else {
@@ -107,7 +107,7 @@ const Login = () => {
               Login
             </LoadingButton>
             <Button
-              href="/forgot-password"
+              href="/forget-password"
               variant="outlined"
               sx={{
                 border: "1px solid #b89f6a",
@@ -116,7 +116,7 @@ const Login = () => {
                 flex: 1,
               }}
             >
-              Forgot Password?
+              Forget Password?
             </Button>
           </Stack>
         </Stack>

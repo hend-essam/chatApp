@@ -16,6 +16,11 @@ const sections = [
   { title: "Chat", items: ["Chat", "Feedback", "Contact"] },
 ];
 
+const LinkStyle = {
+  textDecoration: "none",
+  color: "inherit",
+};
+
 const Footer = () => {
   return (
     <Grid
@@ -35,15 +40,25 @@ const Footer = () => {
             </Typography>
           </Stack>
           <Stack gap="3px">
-            <Typography variant="subtitle1">User Account Option</Typography>
+            <Stack direction="row" gap={1}>
+              <Typography variant="subtitle1">
+                <Link sx={LinkStyle}>User</Link>
+              </Typography>
+              <Typography variant="subtitle1">
+                <Link sx={LinkStyle}>Account</Link>
+              </Typography>
+              <Typography variant="subtitle1">
+                <Link sx={LinkStyle}>Options</Link>
+              </Typography>
+            </Stack>
             <Stack direction="row" gap={2} color="#5E5848">
-              <Link href="/messages" underline="none" color="inherit">
+              <Link href="/messages" sx={LinkStyle}>
                 <MarkunreadIcon />
               </Link>
-              <Link href="/notifications" underline="none" color="inherit">
+              <Link href="/notifications" sx={LinkStyle}>
                 <NotificationsIcon />
               </Link>
-              <Link href="/settings" underline="none" color="inherit">
+              <Link href="/settings" sx={LinkStyle}>
                 <SettingsIcon />
               </Link>
             </Stack>
@@ -60,10 +75,9 @@ const Footer = () => {
                 <Link
                   key={idx}
                   href={`/${item.toLowerCase().replace(/\s+/g, "-")}`}
-                  underline="none"
-                  color="inherit"
                   title={item}
                   sx={{
+                    ...LinkStyle,
                     display: "inline-block",
                     "&:hover": {
                       color: "#b89f6a",

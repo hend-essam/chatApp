@@ -34,7 +34,7 @@ const ForgetPassword = () => {
       };
 
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/forgot-password`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/forget-password`,
         payload,
         {
           headers: {

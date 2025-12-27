@@ -8,10 +8,15 @@ export default function StoreProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const storeRef = useRef<AppStore>(undefined);
+  const storeRef = useRef<AppStore | null>(null);
   if (!storeRef.current) {
-    storeRef.current = makeStore();
+    try {
+      storeRef.current = makeStore();
+    } catch (error) {
+      console.error('Failed to create store:', error);
+      throw new Error('Store initialization failed');
+    }
   }
 
-  return <Provider store={storeRef.current}>{children}</Provider>;
+  return <Provider store={storeRef.current!}>{children}</Provider>;
 }

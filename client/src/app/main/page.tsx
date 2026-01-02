@@ -14,12 +14,12 @@ const DashboardPage = () => {
       </Typography>
 
       <Box sx={{ display: "flex", gap: 2, mt: 3 }}>
-        <Button variant="contained" onClick={() => router.push("/chat")}>
+        <Button variant="contained" onClick={() => router.push("/main/chat")}>
           Go to Chats
         </Button>
         <Button
           variant="outlined"
-          onClick={() => router.push("/settings")}
+          onClick={() => router.push("/main/settings")}
         >
           Account Settings
         </Button>

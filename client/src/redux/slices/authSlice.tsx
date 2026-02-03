@@ -6,8 +6,14 @@ interface AuthState {
   token: string | null;
 }
 
+// Function to check if user is authenticated via cookies
+const checkAuthFromCookies = (): boolean => {
+  if (typeof document === "undefined") return false;
+  return document.cookie.includes("token=");
+};
+
 const initialState: AuthState = {
-  isAuthenticated: false,
+  isAuthenticated: checkAuthFromCookies(),
   user: null,
   token: null,
 };

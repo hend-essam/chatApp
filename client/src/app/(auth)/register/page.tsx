@@ -21,6 +21,7 @@ import EmailInput from "@/components/auth/EmailInput";
 import PasswordInput from "@/components/auth/PasswordInput";
 import AuthLinkPrompt from "@/components/auth/AuthLinkPrompt";
 import AuthHeader from "@/components/auth/AuthHeader";
+import { redirect } from "next/navigation";
 
 interface RegisterFormData {
   name: string;
@@ -142,7 +143,10 @@ const Register = () => {
 
       if (response.status >= 200 && response.status < 300) {
         setSuccessMessage("✅ Registration successful! You can now login.");
-        setTimeout(resetForm, 3000);
+        setTimeout(() => {
+          resetForm();
+          redirect("/login");
+        }, 3000);
       }
     } catch (err: any) {
       if (err.response) {

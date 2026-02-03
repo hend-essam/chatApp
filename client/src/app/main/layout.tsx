@@ -1,10 +1,10 @@
 "use client";
 import { useSelector } from "react-redux";
 import { redirect } from "next/navigation";
-import DashboardPage from "./page";
 
-const MainLayout = () => {
+const MainLayout = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated } = useSelector((state: any) => state.auth);
+  console.log("MainLayout isAuthenticated:", isAuthenticated);
 
   // Redirect if not authenticated
   if (!isAuthenticated) {
@@ -17,7 +17,7 @@ const MainLayout = () => {
       <div className="content-area">
         <header>header</header>
         <main>links</main>
-        <DashboardPage />
+        {children}
       </div>
     </div>
   );

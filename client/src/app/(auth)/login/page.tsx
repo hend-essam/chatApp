@@ -3,8 +3,8 @@ import { Stack, Button, Alert } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import axios from "axios";
-import { redirect, useRouter } from "next/navigation";
-import { useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
+import { useAppDispatch } from "@/lib/hooks";
 import { login } from "@/redux/slices/authSlice";
 import LoadingButton from "@/components/ui/LoadingButton";
 import EmailInput from "@/components/auth/EmailInput";
@@ -19,7 +19,7 @@ interface LoginFormData {
 
 const Login = () => {
   const router = useRouter();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const {
     register,
     handleSubmit,
@@ -56,8 +56,8 @@ const Login = () => {
         }));
         
         setTimeout(() => {
-          redirect("/main");
-        }, 3000);
+          router.push("/main");
+        }, 1500);
       } else {
         setFormError(
           response.data.message || "Login failed. Please try again.",

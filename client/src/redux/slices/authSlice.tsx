@@ -17,7 +17,7 @@ const initialState: AuthState = {
 
 // Async thunk to initialize auth and fetch user data
 export const initializeAuth = createAsyncThunk(
-  'auth/initializeAuth',
+  "auth/initializeAuth",
   async () => {
     if (typeof document !== "undefined") {
       const hasToken = document.cookie.includes("token=");
@@ -25,28 +25,29 @@ export const initializeAuth = createAsyncThunk(
         try {
           const response = await axios.get(
             `${process.env.NEXT_PUBLIC_API_URL}/api/userDetails`,
-            { withCredentials: true }
+            { withCredentials: true },
           );
           if (response.data.success) {
             const tokenMatch = document.cookie.match(/token=([^;]+)/);
             return {
               user: response.data.data,
               token: tokenMatch ? tokenMatch[1] : null,
-              isAuthenticated: true
+              isAuthenticated: true,
             };
           }
         } catch (error) {
           // If token is invalid, clear it
-          document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+          document.cookie =
+            "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
         }
       }
     }
     return {
       user: null,
       token: null,
-      isAuthenticated: false
+      isAuthenticated: false,
     };
-  }
+  },
 );
 
 const authSlice = createSlice({
@@ -65,7 +66,13 @@ const authSlice = createSlice({
       state.token = null;
       // Clear cookie
       if (typeof document !== "undefined") {
-        document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        document.cookie =
+          "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      }
+    },
+    updateUser: (state, action) => {
+      if (state.user) {
+        state.user = { ...state.user, ...action.payload };
       }
     },
   },
@@ -86,5 +93,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { login, logout } = authSlice.actions;
+export const { login, logout, updateUser } = authSlice.actions;
 export default authSlice.reducer;

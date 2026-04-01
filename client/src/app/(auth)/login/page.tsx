@@ -48,15 +48,17 @@ const Login = () => {
 
       if (response.data.success) {
         setSuccessMessage("✅ Login successful! Redirecting...");
-        
+
         // Dispatch login action to update Redux state
-        dispatch(login({
-          user: response.data.data.user,
-          token: response.data.data.token
-        }));
-        
+        dispatch(
+          login({
+            user: response.data.data.user,
+            token: response.data.data.token,
+          }),
+        );
+
         setTimeout(() => {
-          router.push("/main");
+          router.push("/main/chat");
         }, 1500);
       } else {
         setFormError(

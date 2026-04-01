@@ -146,7 +146,6 @@ const Settings = () => {
           </Button>
         </Stack>
 
-        {/* Name Field */}
         <FormControl fullWidth>
           <Typography variant="body2" sx={{ mb: 1, fontWeight: "500" }}>
             Name

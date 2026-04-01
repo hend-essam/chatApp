@@ -1,16 +1,28 @@
 "use client";
 
-import { Button, Stack, Typography, IconButton, Avatar } from "@mui/material";
+import { Button, Stack, Typography, Avatar } from "@mui/material";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useSelector } from "react-redux";
+import { usePathname, useRouter } from "next/navigation";
+import { useSelector, useDispatch } from "react-redux";
 import ChatIcon from "@mui/icons-material/ChatBubbleOutline";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import LogoutIcon from "@mui/icons-material/Logout";
+import axios from "axios";
+import { logout } from "@/redux/slices/authSlice";
 
 const Sidebar = () => {
   const pathname = usePathname();
+  const router = useRouter();
+  const dispatch = useDispatch();
   const { user } = useSelector((state: any) => state.auth);
+
+  const handleLogout = async () => {
+    await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/logout`, {
+      withCredentials: true,
+    });
+    dispatch(logout());
+    router.push("/login");
+  };
 
   return (
     <Stack
@@ -54,7 +66,7 @@ const Sidebar = () => {
               color: "#333",
               cursor: "pointer",
               transition: "all 0.2s",
-              "&:hover": { color: "primary.main" },
+              "&:hover": { color: "#b89f6a" },
             }}
           />
         </Stack>
@@ -101,6 +113,7 @@ const Sidebar = () => {
         <Button
           variant="text"
           startIcon={<LogoutIcon />}
+          onClick={handleLogout}
           sx={{
             color: "#d32f2f",
             textTransform: "none",

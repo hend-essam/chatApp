@@ -1,17 +1,15 @@
 "use client";
 import AuthGuard from "@/components/auth/AuthGuard";
+import Sidebar from "@/components/main/sidebar";
+import { Stack } from "@mui/material";
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <AuthGuard>
-      <div className="main-layout">
-        <h1>side bar</h1>
-        <div className="content-area">
-          <header>header</header>
-          <main>links</main>
-          {children}
-        </div>
-      </div>
+      <Stack height="100vh" direction="row">
+        <Sidebar />
+        <Stack flexGrow={1}>{children}</Stack>
+      </Stack>
     </AuthGuard>
   );
 };

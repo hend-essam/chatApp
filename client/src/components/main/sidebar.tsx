@@ -61,6 +61,7 @@ const Sidebar = () => {
             {user.name}
           </Typography>
           <PersonAddIcon
+            onClick={() => router.push("/main/add-user")}
             fontSize="small"
             sx={{
               color: "#333",

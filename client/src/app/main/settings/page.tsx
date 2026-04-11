@@ -43,6 +43,8 @@ const Settings = () => {
     register,
     handleSubmit,
     setValue,
+    reset,
+    watch,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -50,6 +52,18 @@ const Settings = () => {
       profilePic: user?.profilePic || "",
     },
   });
+
+  const watchedValues = watch();
+  const isDirty =
+    watchedValues.name !== (user?.name || "") ||
+    watchedValues.profilePic !== (user?.profilePic || "");
+
+  const handleCancel = () => {
+    reset({ name: user?.name || "", profilePic: user?.profilePic || "" });
+    setPreviewImage(user?.profilePic || "");
+    setFormError("");
+    setSuccessMessage("");
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -162,15 +176,29 @@ const Settings = () => {
           )}
         </FormControl>
 
-        <LoadingButton
-          type="submit"
-          loading={loading}
-          sx={{
-            width: "fit-content",
-          }}
-        >
-          Save Changes
-        </LoadingButton>
+        <Stack direction="row" gap={2}>
+          <LoadingButton
+            type="submit"
+            loading={loading}
+            disabled={!isDirty}
+            sx={{ width: "49%" }}
+          >
+            Save
+          </LoadingButton>
+          <Button
+            variant="outlined"
+            onClick={handleCancel}
+            sx={{
+              border: "1px solid #b89f6a",
+              fontWeight: "semi-bold",
+              color: "black",
+              flex: 1,
+              width: "49%",
+            }}
+          >
+            Cancel
+          </Button>
+        </Stack>
       </Stack>
     </Stack>
   );

@@ -108,7 +108,7 @@ const Sidebar = () => {
         direction="row"
         alignItems="center"
         justifyContent="space-between"
-        sx={{ pt: 2, borderTop: "1px solid rgba(0,0,0,0.05)" }}
+        sx={{ borderTop: "1px solid rgba(0,0,0,0.05)" }}
       >
         <Button
           variant="text"

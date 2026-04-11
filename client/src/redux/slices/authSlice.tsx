@@ -24,7 +24,7 @@ export const initializeAuth = createAsyncThunk(
       if (hasToken) {
         try {
           const response = await axios.get(
-            `${process.env.NEXT_PUBLIC_API_URL}/api/userDetails`,
+            `${process.env.NEXT_PUBLIC_API_URL}/userDetails`,
             { withCredentials: true },
           );
           if (response.data.success) {

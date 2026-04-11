@@ -132,13 +132,13 @@ const Register = () => {
       };
 
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/register`,
+        `${process.env.NEXT_PUBLIC_API_URL}/register`,
         payload,
         {
           headers: {
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       if (response.status >= 200 && response.status < 300) {
@@ -151,7 +151,8 @@ const Register = () => {
     } catch (err: any) {
       if (err.response) {
         setFormError(
-          err.response.data?.message || "Registration failed. Please try again."
+          err.response.data?.message ||
+            "Registration failed. Please try again.",
         );
       } else {
         setFormError("Network error. Please check your connection.");
@@ -248,7 +249,7 @@ const Register = () => {
                           !files?.[0] ||
                           files[0].size <= MAX_FILE_SIZE ||
                           `❌ Max ${(MAX_FILE_SIZE / 1024 / 1024).toFixed(
-                            0
+                            0,
                           )}MB allowed`,
                       },
                     })}

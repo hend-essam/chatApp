@@ -85,7 +85,7 @@ const Settings = () => {
 
     try {
       const response = await axios.put(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/updateUserDetails`,
+        `${process.env.NEXT_PUBLIC_API_URL}/updateUserDetails`,
         data,
         { withCredentials: true },
       );

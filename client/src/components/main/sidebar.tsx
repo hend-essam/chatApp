@@ -17,7 +17,7 @@ const Sidebar = () => {
   const { user } = useSelector((state: any) => state.auth);
 
   const handleLogout = async () => {
-    await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/logout`, {
+    await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/logout`, {
       withCredentials: true,
     });
     dispatch(logout());

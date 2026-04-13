@@ -5,6 +5,7 @@ import CheckPassword from "../controller/checkPassword";
 import UserDetails from "../controller/userDetails";
 import Logout from "../controller/logout";
 import UpdateUserDetails from "../controller/updateUserDetails";
+import SearchUsers from "../controller/searchUser";
 import Login from "../controller/loginUser";
 
 const routes = express.Router();
@@ -23,5 +24,7 @@ routes.get("/userDetails", UserDetails);
 routes.get("/logout", Logout);
 // update user details
 routes.put("/updateUserDetails", UpdateUserDetails);
+// search users
+routes.get("/users/search", SearchUsers);
 
 export default routes;

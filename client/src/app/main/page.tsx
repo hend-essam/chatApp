@@ -1,24 +1,16 @@
 "use client";
-import { useRouter } from "next/navigation";
-import { usePathname } from "next/navigation";
-import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import Chat from "./chat/page";
-import Settings from "./settings/page";
+import { Stack, Typography } from "@mui/material";
 
 const DashboardPage = () => {
-  const router = useRouter();
-  const pathname = usePathname();
   const { user } = useSelector((state: any) => state.auth);
-  useEffect(() => {
-    if (pathname === "/main") router.push("/main/chat");
-  }, [pathname]);
-  console.log("DashboardPage user:", user);
+
   return (
-    <>
-      {pathname === "/main/chat" && <Chat />}
-      {pathname === "/main/settings" && <Settings />}
-    </>
+    <Stack direction="row" sx={{ height: "100vh", width: "90%", m: "auto" }}>
+      <Typography variant="h4" sx={{ color: "#686666", m: "auto" }}>
+        Welcome, {user?.name}! Please select a chat.
+      </Typography>
+    </Stack>
   );
 };
 

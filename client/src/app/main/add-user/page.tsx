@@ -13,6 +13,7 @@ import {
   Stack,
   TextField,
   Typography,
+  Link,
 } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -97,21 +98,26 @@ const AddUser = () => {
       {!loading && users.length > 0 && (
         <List disablePadding>
           {users.map((u) => (
-            <ListItem
+            <Link
               key={u._id}
-              disableGutters
-              sx={{
-                borderRadius: 2,
-                cursor: "pointer",
-                "&:hover": { backgroundColor: "rgba(0,0,0,0.04)" },
-                px: 1,
-              }}
+              href={`/main/${u._id}`}
+              sx={{ textDecoration: "none", color: "inherit" }}
             >
-              <ListItemAvatar>
-                <Avatar src={u.profilePic} alt={u.name} />
-              </ListItemAvatar>
-              <ListItemText primary={u.name} secondary={u.email} />
-            </ListItem>
+              <ListItem
+                disableGutters
+                sx={{
+                  borderRadius: 2,
+                  cursor: "pointer",
+                  "&:hover": { backgroundColor: "rgba(0,0,0,0.04)" },
+                  px: 1,
+                }}
+              >
+                <ListItemAvatar>
+                  <Avatar src={u.profilePic} alt={u.name} />
+                </ListItemAvatar>
+                <ListItemText primary={u.name} secondary={u.email} />
+              </ListItem>
+            </Link>
           ))}
         </List>
       )}

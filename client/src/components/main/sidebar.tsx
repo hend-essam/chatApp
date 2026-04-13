@@ -74,7 +74,7 @@ const Sidebar = () => {
       )}
 
       <Stack spacing={2} flexGrow={1} sx={{ overflowY: "auto" }}>
-        <Link href="/main/chat" style={{ textDecoration: "none" }}>
+        {/* <Link href="/main/chat" style={{ textDecoration: "none" }}>
           <Stack
             direction="row"
             alignItems="center"
@@ -100,7 +100,7 @@ const Sidebar = () => {
               All Chats
             </Typography>
           </Stack>
-        </Link>
+        </Link> */}
 
         {/* <ChatList /> */}
       </Stack>

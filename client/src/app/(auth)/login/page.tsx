@@ -58,7 +58,7 @@ const Login = () => {
         );
 
         setTimeout(() => {
-          router.push("/main/chat");
+          router.push("/main");
         }, 1500);
       } else {
         setFormError(

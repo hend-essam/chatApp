@@ -3,6 +3,7 @@
 import { Search } from "@mui/icons-material";
 import {
   Avatar,
+  Badge,
   CircularProgress,
   InputAdornment,
   List,
@@ -17,6 +18,7 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 interface User {
   _id: string;
@@ -29,6 +31,10 @@ const AddUser = () => {
   const [query, setQuery] = useState("");
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(false);
+  const { onlineUsers } = useSelector((state: any) => state.user);
+
+  console.log("[AddUser] onlineUsers from Redux:", onlineUsers);
+  console.log("[AddUser] users:", users);
 
   useEffect(() => {
     if (!query.trim()) {
@@ -113,7 +119,24 @@ const AddUser = () => {
                 }}
               >
                 <ListItemAvatar>
-                  <Avatar src={u.profilePic} alt={u.name} />
+                  <Badge
+                    overlap="circular"
+                    anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                    variant="dot"
+                    invisible={!onlineUsers.includes(u._id)}
+                    sx={{
+                      "& .MuiBadge-badge": {
+                        backgroundColor: "#44b700",
+                        color: "#44b700",
+                        boxShadow: `0 0 0 2px #fff`,
+                        width: 12,
+                        height: 12,
+                        borderRadius: "50%",
+                      },
+                    }}
+                  >
+                    <Avatar src={u.profilePic} alt={u.name} />
+                  </Badge>
                 </ListItemAvatar>
                 <ListItemText primary={u.name} secondary={u.email} />
               </ListItem>

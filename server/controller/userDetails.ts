@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import GetUserDetailsFromToken from "../helpers/getUserDetailsFromToken";
+import { onlineUsers } from "../socket/index";
 
 async function UserDetails(req: Request, res: Response): Promise<void> {
   try {
@@ -9,7 +10,10 @@ async function UserDetails(req: Request, res: Response): Promise<void> {
     res.status(200).json({
       message: "User details",
       success: true,
-      data: user,
+      data: {
+        ...(user as any)._doc,
+        onlineUsers: Array.from(onlineUsers),
+      },
     });
   } catch (err) {
     const errorMessage =

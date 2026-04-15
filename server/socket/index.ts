@@ -58,7 +58,7 @@ io.use(async (socket, next) => {
 io.on("connection", (socket) => {
   console.log("[Step 4] Socket fully connected, id:", socket.id);
   console.log("[Step 4] Emitting online users:", Array.from(onlineUsers));
-  
+
   // Emit to all clients including the newly connected one
   io.emit("onlineUsers", Array.from(onlineUsers));
 
@@ -73,4 +73,4 @@ io.on("connection", (socket) => {
   });
 });
 
-export { app, server };
+export { app, server, onlineUsers };

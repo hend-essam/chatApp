@@ -37,27 +37,30 @@ const AddUser = () => {
   console.log("[AddUser] users:", users);
 
   useEffect(() => {
-    if (!query.trim()) {
-      setUsers([]);
-      return;
-    }
-
-    const timer = setTimeout(async () => {
+    const fetchUsers = async () => {
       setLoading(true);
       try {
-        const { data } = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/users/search`,
-          { params: { q: query }, withCredentials: true },
-        );
+        const endpoint = query.trim()
+          ? `${process.env.NEXT_PUBLIC_API_URL}/users/search`
+          : `${process.env.NEXT_PUBLIC_API_URL}/users`;
+        const { data } = await axios.get(endpoint, {
+          params: query.trim() ? { q: query } : {},
+          withCredentials: true,
+        });
         setUsers(data.data ?? []);
       } catch {
         setUsers([]);
       } finally {
         setLoading(false);
       }
-    }, 400);
+    };
 
-    return () => clearTimeout(timer);
+    if (query.trim()) {
+      const timer = setTimeout(fetchUsers, 400);
+      return () => clearTimeout(timer);
+    } else {
+      fetchUsers();
+    }
   }, [query]);
 
   return (
@@ -145,7 +148,7 @@ const AddUser = () => {
         </List>
       )}
 
-      {!loading && query.trim() && users.length === 0 && (
+      {!loading && users.length === 0 && (
         <Typography variant="body2" sx={{ color: "#999", textAlign: "center" }}>
           No users found.
         </Typography>

@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Stack, Typography, Avatar } from "@mui/material";
+import { Button, Stack, Typography, Avatar, Badge } from "@mui/material";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
@@ -15,6 +15,7 @@ const Sidebar = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const { user } = useSelector((state: any) => state.auth);
+  const { onlineUsers } = useSelector((state: any) => state.user);
 
   const handleLogout = async () => {
     await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/logout`, {
@@ -38,16 +39,32 @@ const Sidebar = () => {
       {user && (
         <Stack direction="row" alignItems="center" spacing={2} sx={{ mb: 4 }}>
           <Link href="/main/settings" style={{ textDecoration: "none" }}>
-            <Avatar
-              src={user.profilePic}
-              alt="avatar"
+            <Badge
+              overlap="circular"
+              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+              variant="dot"
+              invisible={!onlineUsers.includes(user._id)}
               sx={{
-                width: "40px",
-                height: "40px",
-                border: "2px solid #fff",
-                boxShadow: "0px 2px 4px rgba(0,0,0,0.1)", // ظل خفيف للـ Avatar
+                "& .MuiBadge-badge": {
+                  backgroundColor: "#44b700",
+                  width: 12,
+                  height: 12,
+                  borderRadius: "50%",
+                  border: "2px solid #fff",
+                },
               }}
-            />
+            >
+              <Avatar
+                src={user.profilePic}
+                alt="avatar"
+                sx={{
+                  width: "40px",
+                  height: "40px",
+                  border: "2px solid #fff",
+                  boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
+                }}
+              />
+            </Badge>
           </Link>
           <Typography
             variant="subtitle1"

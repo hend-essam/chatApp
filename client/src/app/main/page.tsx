@@ -3,9 +3,13 @@ import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Stack, Typography } from "@mui/material";
 import io from "socket.io-client";
+import { useAppDispatch } from "@/lib/hooks";
+import { setOnlineUsers } from "@/redux/slices/userSlice";
 
 const DashboardPage = () => {
   const { user, token } = useSelector((state: any) => state.auth);
+  const { onlineUsers } = useSelector((state: any) => state.user);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (!token) {
@@ -22,12 +26,25 @@ const DashboardPage = () => {
       withCredentials: true,
     });
 
+    socketConnection.on("onlineUsers", (users) => {
+      console.log("[Step 4] Received online users array:", users);
+      console.log("[Step 4] Number of online users:", users.length);
+      dispatch(setOnlineUsers(users));
+    });
+
     socketConnection.on("connect", () => {
-      console.log("[Step 3] Socket connected successfully, id:", socketConnection.id);
+      console.log(
+        "[Step 3] Socket connected successfully, id:",
+        socketConnection.id,
+      );
     });
 
     socketConnection.on("connect_error", (err) => {
-      console.error("[Step 3] Socket connection failed:", err.message, (err as any).data);
+      console.error(
+        "[Step 3] Socket connection failed:",
+        err.message,
+        (err as any).data,
+      );
     });
 
     return () => {
@@ -40,6 +57,10 @@ const DashboardPage = () => {
     <Stack direction="row" sx={{ height: "100vh", width: "90%", m: "auto" }}>
       <Typography variant="h4" sx={{ color: "#686666", m: "auto" }}>
         Welcome, {user?.name}!<br /> Please select a chat.
+        <br />
+        <Typography variant="body1" sx={{ mt: 2 }}>
+          Online users: {onlineUsers.length}
+        </Typography>
       </Typography>
     </Stack>
   );

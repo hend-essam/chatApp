@@ -8,6 +8,7 @@ dotenv.config();
 
 const app = express();
 const server = http.createServer(app);
+const onlineUsers = new Set<string>();
 
 console.log(
   "[INIT] Setting up Socket.IO with FRONTEND_URL:",
@@ -37,6 +38,12 @@ io.use(async (socket, next) => {
     const user = await GetUserDetailsFromToken(token);
     console.log("[Step 3] Token verified, user:", (user as any)?._id);
     (socket as any).user = user;
+
+    socket.join((user as any)?._id);
+    onlineUsers.add((user as any)?._id);
+
+    io.emit("onlineUsers", Array.from(onlineUsers));
+
     next();
   } catch (err) {
     console.log(
@@ -50,9 +57,19 @@ io.use(async (socket, next) => {
 
 io.on("connection", (socket) => {
   console.log("[Step 4] Socket fully connected, id:", socket.id);
+  console.log("[Step 4] Emitting online users:", Array.from(onlineUsers));
+  
+  // Emit to all clients including the newly connected one
+  io.emit("onlineUsers", Array.from(onlineUsers));
 
   socket.on("disconnect", () => {
     console.log("[Step 5] User disconnected, socket id:", socket.id);
+    const userId = (socket as any).user?._id;
+    if (userId) {
+      onlineUsers.delete(userId);
+      console.log("[Step 5] Updated online users:", Array.from(onlineUsers));
+      io.emit("onlineUsers", Array.from(onlineUsers));
+    }
   });
 });
 

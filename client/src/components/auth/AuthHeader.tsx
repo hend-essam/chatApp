@@ -3,23 +3,29 @@ import { Stack, Typography } from "@mui/material";
 import Link from "next/link";
 
 interface AuthHeaderProps {
-  title: string;
+  title?: string;
+  withLine?: boolean;
+  link?: string;
 }
 
-const AuthHeader = ({ title }: AuthHeaderProps) => {
+const AuthHeader = ({
+  title,
+  withLine = true,
+  link = "/",
+}: AuthHeaderProps) => {
   return (
     <Stack
       direction="row"
       alignItems="center"
       gap={2}
-      borderBottom={"3px double #b89f6a"}
+      borderBottom={withLine ? "3px double #b89f6a" : "none"}
       p={1}
     >
       <Typography
         variant="h3"
         color="#b89f6a"
         component={Link}
-        href="/"
+        href={link}
         sx={{ textDecoration: "none" }}
       >
         Chatify

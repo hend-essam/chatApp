@@ -21,6 +21,7 @@ import EmailInput from "@/components/auth/EmailInput";
 import PasswordInput from "@/components/auth/PasswordInput";
 import AuthLinkPrompt from "@/components/auth/AuthLinkPrompt";
 import AuthHeader from "@/components/auth/AuthHeader";
+import { redirect } from "next/navigation";
 
 interface RegisterFormData {
   name: string;
@@ -131,23 +132,27 @@ const Register = () => {
       };
 
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/register`,
+        `${process.env.NEXT_PUBLIC_API_URL}/register`,
         payload,
         {
           headers: {
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       if (response.status >= 200 && response.status < 300) {
         setSuccessMessage("✅ Registration successful! You can now login.");
-        setTimeout(resetForm, 3000);
+        setTimeout(() => {
+          resetForm();
+          redirect("/login");
+        }, 3000);
       }
     } catch (err: any) {
       if (err.response) {
         setFormError(
-          err.response.data?.message || "Registration failed. Please try again."
+          err.response.data?.message ||
+            "Registration failed. Please try again.",
         );
       } else {
         setFormError("Network error. Please check your connection.");
@@ -244,7 +249,7 @@ const Register = () => {
                           !files?.[0] ||
                           files[0].size <= MAX_FILE_SIZE ||
                           `❌ Max ${(MAX_FILE_SIZE / 1024 / 1024).toFixed(
-                            0
+                            0,
                           )}MB allowed`,
                       },
                     })}

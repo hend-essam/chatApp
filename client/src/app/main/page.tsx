@@ -1,34 +1,21 @@
 "use client";
-import { Box, Typography, Button } from "@mui/material";
-import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
+import { Stack, Typography } from "@mui/material";
 
 const DashboardPage = () => {
-  const router = useRouter();
   const { user } = useSelector((state: any) => state.auth);
+  const { onlineUsers } = useSelector((state: any) => state.user);
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Typography variant="h4" gutterBottom>
-        Welcome back, {user?.name}!
+    <Stack direction="row" sx={{ height: "100vh", width: "90%", m: "auto" }}>
+      <Typography variant="h4" sx={{ color: "#686666", m: "auto" }}>
+        Welcome, {user?.name}!<br /> Please select a chat.
+        <br />
+        <Typography variant="body1" sx={{ mt: 2 }}>
+          Online users: {onlineUsers.length}
+        </Typography>
       </Typography>
-
-      <Box sx={{ display: "flex", gap: 2, mt: 3 }}>
-        <Button variant="contained" onClick={() => router.push("/main/chat")}>
-          Go to Chats
-        </Button>
-        <Button
-          variant="outlined"
-          onClick={() => router.push("/main/settings")}
-        >
-          Account Settings
-        </Button>
-      </Box>
-
-      <Box sx={{ mt: 4 }}>
-        <Typography variant="h6">Recent Activity</Typography>
-      </Box>
-    </Box>
+    </Stack>
   );
 };
 

@@ -59,7 +59,7 @@ async function Login(
 
     // Set cookie options
     const cookieOptions = {
-      httpOnly: true,
+      httpOnly: false,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict" as const,
       maxAge: 24 * 60 * 60 * 1000,

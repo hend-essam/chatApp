@@ -1,7 +1,8 @@
 "use client";
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import { Provider } from "react-redux";
 import { makeStore, AppStore } from "../lib/store";
+import { initializeAuth } from "../redux/slices/authSlice";
 
 export default function StoreProvider({
   children,
@@ -10,13 +11,13 @@ export default function StoreProvider({
 }) {
   const storeRef = useRef<AppStore | null>(null);
   if (!storeRef.current) {
-    try {
-      storeRef.current = makeStore();
-    } catch (error) {
-      console.error('Failed to create store:', error);
-      throw new Error('Store initialization failed');
-    }
+    storeRef.current = makeStore();
   }
+
+  useEffect(() => {
+    // Initialize auth state from cookies on client side only
+    storeRef.current?.dispatch(initializeAuth());
+  }, []);
 
   return <Provider store={storeRef.current!}>{children}</Provider>;
 }

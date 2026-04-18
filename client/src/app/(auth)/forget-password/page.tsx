@@ -34,13 +34,13 @@ const ForgetPassword = () => {
       };
 
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/forget-password`,
+        `${process.env.NEXT_PUBLIC_API_URL}/forget-password`,
         payload,
         {
           headers: {
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       if (response.data.success) {
@@ -48,14 +48,14 @@ const ForgetPassword = () => {
       } else {
         setFormError(
           response.data.message ||
-            "Failed to send reset link. Please try again."
+            "Failed to send reset link. Please try again.",
         );
       }
     } catch (err: any) {
       if (err.response) {
         setFormError(
           err.response.data?.message ||
-            "Failed to process your request. Please try again."
+            "Failed to process your request. Please try again.",
         );
       } else {
         setFormError("Network error. Please check your connection.");

@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import connectDB from "./config/connectDB";
 import router from "./routes/index";
 import cookieParser from "cookie-parser";
+import { app, server } from "./socket/index";
 
 // Load environment variables from .env file
 dotenv.config();
@@ -12,18 +13,18 @@ dotenv.config();
 const requiredEnvVars = ["MONGODB_URL", "FRONTEND_URL", "PORT"];
 
 const missingEnvVars = requiredEnvVars.filter(
-  (varName) => !process.env[varName]
+  (varName) => !process.env[varName],
 );
 
 if (missingEnvVars.length > 0) {
   console.error(
     "Missing required environment variables:",
-    missingEnvVars.join(", ")
+    missingEnvVars.join(", "),
   );
   process.exit(1);
 }
 
-const app = express();
+//const app = express();
 
 // CORS Configuration
 const corsOptions: cors.CorsOptions = {
@@ -49,21 +50,21 @@ app.get("/", (req: Request, res: Response) => {
 
 app.use("/api", router);
 
-// 404 Handler
-app.use((req: Request, res: Response) => {
-  res.status(404).json({ error: "Route not found" });
-});
-
 // Error Handling Middleware (TypeScript)
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   console.error("Server error:", err);
   res.status(500).json({ error: "Internal server error" });
 });
 
+// 404 Handler
+app.use((req: Request, res: Response) => {
+  res.status(404).json({ error: "Route not found" });
+});
+
 // Database connection and server start
 connectDB()
   .then(() => {
-    const server = app.listen(PORT, () => {
+    server.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
     });
 

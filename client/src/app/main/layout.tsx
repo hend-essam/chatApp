@@ -1,29 +1,19 @@
 "use client";
-import { useSelector } from "react-redux";
-import { redirect } from "next/navigation";
-import { RootState } from "../../lib/store";
-import StoreProvider from "../StoreProvider";
-import DashboardPage from "./page";
+import AuthGuard from "@/components/auth/AuthGuard";
+import Sidebar from "@/components/main/sidebar";
+import { Stack } from "@mui/material";
+import { SocketProvider } from "@/providers/SocketProvider";
 
-const MainLayout = () => {
-  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
-
-  // Redirect to main if authenticated
-  if (isAuthenticated) {
-    redirect("/main");
-  }
-
+const MainLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <StoreProvider>
-      <div className="main-layout">
-        <h1>side bar</h1>
-        <div className="content-area">
-          <header>header</header>
-          <main>links</main>
-        </div>
-      </div>
-      <DashboardPage />
-    </StoreProvider>
+    <AuthGuard>
+      <SocketProvider>
+        <Stack height="100vh" direction="row">
+          <Sidebar />
+          <Stack flexGrow={1}>{children}</Stack>
+        </Stack>
+      </SocketProvider>
+    </AuthGuard>
   );
 };
 

@@ -4,6 +4,8 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { useAppDispatch } from "@/lib/hooks";
+import { login } from "@/redux/slices/authSlice";
 import LoadingButton from "@/components/ui/LoadingButton";
 import EmailInput from "@/components/auth/EmailInput";
 import PasswordInput from "@/components/auth/PasswordInput";
@@ -17,6 +19,7 @@ interface LoginFormData {
 
 const Login = () => {
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const {
     register,
     handleSubmit,
@@ -33,37 +36,40 @@ const Login = () => {
     setSuccessMessage("");
 
     try {
-      const payload = {
-        email: data.email,
-        password: data.password,
-      };
-
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/login`,
-        payload,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await axios({
+        method: "post",
+        url: `${process.env.NEXT_PUBLIC_API_URL}/login`,
+        data: {
+          email: data.email,
+          password: data.password,
+        },
+        withCredentials: true,
+      });
 
       if (response.data.success) {
         setSuccessMessage("✅ Login successful! Redirecting...");
+
+        // Dispatch login action to update Redux state
+        dispatch(
+          login({
+            user: response.data.data.user,
+            token: response.data.data.token,
+          }),
+        );
+
         setTimeout(() => {
           router.push("/main");
-          router.refresh();
         }, 1500);
       } else {
         setFormError(
-          response.data.message || "Login failed. Please try again."
+          response.data.message || "Login failed. Please try again.",
         );
       }
     } catch (err: any) {
       if (err.response) {
         setFormError(
           err.response.data?.message ||
-            "Invalid email or password. Please try again."
+            "Invalid email or password. Please try again.",
         );
       } else {
         setFormError("Network error. Please check your connection.");

@@ -1,21 +1,35 @@
 "use client";
 
-import { Button, Stack, Typography, Avatar, Badge } from "@mui/material";
+import {
+  Button,
+  Stack,
+  Typography,
+  Avatar,
+  Badge,
+  IconButton,
+  Tooltip,
+} from "@mui/material";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
 import ChatIcon from "@mui/icons-material/ChatBubbleOutline";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import LogoutIcon from "@mui/icons-material/Logout";
+import RefreshIcon from "@mui/icons-material/Refresh";
 import axios from "axios";
 import { logout } from "@/redux/slices/authSlice";
+import { setConversations } from "@/redux/slices/messageSlice";
+import ChatList from "./ChatList";
+import { useSocket } from "@/providers/SocketProvider";
 
 const Sidebar = () => {
   const pathname = usePathname();
   const router = useRouter();
   const dispatch = useDispatch();
+  const { socket, isConnected } = useSocket();
   const { user } = useSelector((state: any) => state.auth);
   const { onlineUsers } = useSelector((state: any) => state.user);
+  const { conversations } = useSelector((state: any) => state.message);
 
   const handleLogout = async () => {
     await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/logout`, {
@@ -23,6 +37,18 @@ const Sidebar = () => {
     });
     dispatch(logout());
     router.push("/login");
+  };
+
+  const handleRefresh = async () => {
+    try {
+      const { data } = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/conversations`,
+        { withCredentials: true },
+      );
+      dispatch(setConversations(data.data || []));
+    } catch (err: any) {
+      console.error("[Sidebar] Error refreshing:", err?.message);
+    }
   };
 
   return (
@@ -87,39 +113,26 @@ const Sidebar = () => {
               "&:hover": { color: "#b89f6a" },
             }}
           />
+          <Tooltip
+            title={`Socket: ${isConnected ? "Connected" : "Disconnected"} | Conversations: ${conversations.length}`}
+          >
+            <IconButton
+              onClick={handleRefresh}
+              size="small"
+              sx={{
+                color: isConnected ? "#44b700" : "#d32f2f",
+                transition: "all 0.2s",
+                "&:hover": { transform: "rotate(180deg)" },
+              }}
+            >
+              <RefreshIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
         </Stack>
       )}
 
       <Stack spacing={2} flexGrow={1} sx={{ overflowY: "auto" }}>
-        {/* <Link href="/main/chat" style={{ textDecoration: "none" }}>
-          <Stack
-            direction="row"
-            alignItems="center"
-            spacing={2}
-            sx={{
-              padding: "12px 20px",
-              borderRadius: "20px",
-              transition: "all 0.2s",
-              backgroundColor:
-                pathname === "/main/chat"
-                  ? "rgba(0, 0, 0, 0.05)"
-                  : "transparent",
-              color:
-                pathname === "/main/chat" ? "primary.main" : "text.secondary",
-              "&:hover": { backgroundColor: "rgba(0, 0, 0, 0.03)" },
-            }}
-          >
-            <ChatIcon fontSize="small" />
-            <Typography
-              variant="h6"
-              sx={{ fontWeight: "500", fontSize: "1.1rem" }}
-            >
-              All Chats
-            </Typography>
-          </Stack>
-        </Link> */}
-
-        {/* <ChatList /> */}
+        <ChatList />
       </Stack>
 
       <Stack
@@ -137,6 +150,7 @@ const Sidebar = () => {
             textTransform: "none",
             fontWeight: "bold",
             borderRadius: "12px",
+            width: "100%",
             "&:hover": { backgroundColor: "rgba(211, 47, 47, 0.05)" },
           }}
         >

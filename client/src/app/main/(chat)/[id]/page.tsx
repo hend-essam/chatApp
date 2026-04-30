@@ -13,10 +13,9 @@ import {
   Badge,
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
-import axios from "axios";
+import axiosInstance from "@/lib/axios";
 import { useSocket } from "@/providers/SocketProvider";
 import { useAppDispatch } from "@/lib/hooks";
-import { setCurrentMessages } from "@/redux/slices/messageSlice";
 
 const Chat = () => {
   const params = useParams();
@@ -24,6 +23,7 @@ const Chat = () => {
   const [message, setMessage] = useState("");
   const [otherUser, setOtherUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [messages, setMessages] = useState<any[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const currentRoomRef = useRef<string | null>(null);
@@ -36,29 +36,26 @@ const Chat = () => {
   useEffect(() => {
     setMessages([]);
     setLoading(true);
+    setError(null);
     conversationIdRef.current = null;
 
     const fetchData = async () => {
       try {
-        const userRes = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
-          withCredentials: true,
-        });
-        
+        const userRes = await axiosInstance.get("/users");
+
         const foundUser = userRes.data.data.find((u: any) => u._id === userId);
         setOtherUser(foundUser);
         setLoading(false);
 
-        const convRes = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/conversation/${userId}`, {
-          withCredentials: true,
-        });
+        const convRes = await axiosInstance.get(`/conversation/${userId}`);
 
         const conv = convRes.data.data;
         if (conv?.messages) {
           setMessages(conv.messages);
           conversationIdRef.current = conv._id;
-          
+
           const unseenMessages = conv.messages.filter(
-            (msg: any) => msg.msgByUserId !== user._id && !msg.seen
+            (msg: any) => msg.msgByUserId !== user._id && !msg.seen,
           );
           if (unseenMessages.length > 0 && socket) {
             unseenMessages.forEach((msg: any) => {
@@ -68,6 +65,21 @@ const Chat = () => {
         }
       } catch (err) {
         console.error("Error fetching data:", err);
+        // Handle different error cases
+        if ((err as any).response?.status === 400) {
+          console.error("Invalid user ID - user not found");
+          setError("User not found. Please check the user ID.");
+          setOtherUser(null);
+        } else if ((err as any).response?.status === 404) {
+          console.error("Conversation not found");
+          setError("No conversation found with this user.");
+          setMessages([]);
+        } else if ((err as any).response?.status === 401) {
+          console.error("Unauthorized");
+          setError("You are not authorized to view this conversation.");
+        } else {
+          setError("Failed to load conversation. Please try again.");
+        }
         setLoading(false);
       }
     };
@@ -76,21 +88,21 @@ const Chat = () => {
 
     if (socket && user) {
       const roomName = `chat-${user._id}-${userId}`;
-      
+
       socket.emit("message-page", {
         userId: user._id,
         conversationUserId: userId,
         leaveRoom: currentRoomRef.current,
       });
-      
+
       currentRoomRef.current = roomName;
 
       const handleMessage = (data: any) => {
         if (data.conversationId === conversationIdRef.current) {
           setMessages(data.messages);
-          
+
           const unseenMessages = data.messages.filter(
-            (msg: any) => msg.msgByUserId !== user._id && !msg.seen
+            (msg: any) => msg.msgByUserId !== user._id && !msg.seen,
           );
           unseenMessages.forEach((msg: any) => {
             socket.emit("seen", msg._id);
@@ -103,18 +115,19 @@ const Chat = () => {
 
       const handleConversationUpdate = (conversations: any[]) => {
         // Check if the current conversation was updated
-        const updated = conversations.find((c: any) => 
-          c._id === conversationIdRef.current
+        const updated = conversations.find(
+          (c: any) => c._id === conversationIdRef.current,
         );
         if (updated) {
           // Refetch messages to get the latest
-          axios.get(`${process.env.NEXT_PUBLIC_API_URL}/conversation/${userId}`, {
-            withCredentials: true,
-          }).then(res => {
-            if (res.data.data?.messages) {
-              setMessages(res.data.data.messages);
-            }
-          }).catch(err => console.error("Error refreshing:", err));
+          axiosInstance
+            .get(`/conversation/${userId}`)
+            .then((res) => {
+              if (res.data.data?.messages) {
+                setMessages(res.data.data.messages);
+              }
+            })
+            .catch((err) => console.error("Error refreshing:", err));
         }
       };
 
@@ -145,6 +158,35 @@ const Chat = () => {
   };
 
   const isOnline = onlineUsers.includes(userId);
+
+  // Show error state
+  if (error) {
+    return (
+      <Stack
+        sx={{
+          height: "100vh",
+          justifyContent: "center",
+          alignItems: "center",
+          p: 4,
+        }}
+      >
+        <Typography
+          variant="h6"
+          color="error"
+          sx={{ mb: 2, textAlign: "center" }}
+        >
+          {error}
+        </Typography>
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          sx={{ textAlign: "center" }}
+        >
+          Please go back and select a valid user.
+        </Typography>
+      </Stack>
+    );
+  }
 
   if (loading) {
     return (
@@ -197,7 +239,7 @@ const Chat = () => {
             </>
           )}
         </Paper>
-        
+
         <Box
           sx={{
             flexGrow: 1,

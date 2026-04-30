@@ -1,5 +1,6 @@
 import { ConversationSchema } from "../models/ConversationModel";
 import GetUserDetailsFromToken from "../helpers/getUserDetailsFromToken";
+import mongoose from "mongoose";
 
 async function getConversations(req: any, res: any) {
   try {
@@ -9,7 +10,12 @@ async function getConversations(req: any, res: any) {
       return res.status(401).json({ message: "Unauthorized", error: true });
     }
 
-    const userId = (currentUser as any)._id.toString();
+    const userId = (currentUser as any)._id;
+
+    // Validate userId is a valid ObjectId
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: "Invalid user ID", error: true });
+    }
 
     const conversations = await ConversationSchema.find({
       $or: [{ sender: userId }, { receiver: userId }],
@@ -26,13 +32,14 @@ async function getConversations(req: any, res: any) {
         (a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       )[0];
       const unseenCount = messages.filter(
-        (msg: any) => msg.msgByUserId?.toString() !== userId && !msg.seen
+        (msg: any) => msg.msgByUserId?.toString() !== userId.toString() && !msg.seen
       ).length;
       return { ...conv.toObject(), messages: lastMessage ? [lastMessage] : [], unseenCount };
     });
 
     res.json({ message: "Conversations retrieved", success: true, data: conversationsWithCount });
   } catch (err: any) {
+    console.error("[GetConversations] Error:", err.message);
     return res.status(500).json({ message: err.message || err, error: true });
   }
 }

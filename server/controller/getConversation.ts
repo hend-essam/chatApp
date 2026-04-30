@@ -1,5 +1,6 @@
 import { ConversationSchema } from "../models/ConversationModel";
 import GetUserDetailsFromToken from "../helpers/getUserDetailsFromToken";
+import mongoose from "mongoose";
 
 async function getConversation(req: any, res: any) {
   try {
@@ -11,6 +12,11 @@ async function getConversation(req: any, res: any) {
 
     const { userId } = req.params;
     const senderId = (currentUser as any)._id;
+
+    // Validate both IDs are valid ObjectIds
+    if (!mongoose.Types.ObjectId.isValid(userId) || !mongoose.Types.ObjectId.isValid(senderId)) {
+      return res.status(400).json({ message: "Invalid user ID", error: true });
+    }
 
     let conversation = await ConversationSchema.findOne({
       $or: [
@@ -25,12 +31,7 @@ async function getConversation(req: any, res: any) {
     .lean();
 
     if (!conversation) {
-      const newConv = await ConversationSchema.create({
-        sender: senderId,
-        receiver: userId,
-        messages: [],
-      });
-      conversation = newConv.toObject();
+      return res.status(404).json({ message: "Conversation not found", error: true });
     }
 
     res.json({ message: "Conversation found", success: true, data: conversation });

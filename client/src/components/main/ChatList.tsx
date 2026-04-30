@@ -39,6 +39,14 @@ const ChatList = () => {
       dispatch(setConversations(response.data.data || []));
     } catch (err: any) {
       console.error("[ChatList] Error fetching conversations:", err?.message);
+      // Handle different error cases
+      if (err.response?.status === 400) {
+        console.error("Invalid user ID");
+      } else if (err.response?.status === 401) {
+        console.error("Unauthorized - redirecting to login");
+      }
+      // Set empty conversations on error
+      dispatch(setConversations([]));
     } finally {
       setLoading(false);
     }

@@ -48,6 +48,15 @@ app.get("/", (req: Request, res: Response) => {
   res.json({ message: `Server running on port ${PORT}` });
 });
 
+// Test API endpoint
+app.get("/api/health", (req: Request, res: Response) => {
+  res.json({ 
+    message: "API is working", 
+    timestamp: new Date().toISOString(),
+    port: PORT 
+  });
+});
+
 app.use("/api", router);
 
 // Error Handling Middleware (TypeScript)

@@ -1,10 +1,10 @@
 "use client";
-
 import { createContext, useContext, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import io, { Socket } from "socket.io-client";
 import { useAppDispatch } from "@/lib/hooks";
 import { setOnlineUsers } from "@/redux/slices/userSlice";
+import { setConversations } from "@/redux/slices/messageSlice";
 
 interface SocketContextType {
   socket: Socket | null;
@@ -46,6 +46,10 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
     socketConnection.on("onlineUsers", (users) => {
       console.log("[Socket] Received online users:", users);
       dispatch(setOnlineUsers(users));
+    });
+
+    socketConnection.on("conversation", (conversations) => {
+      dispatch(setConversations(conversations));
     });
 
     socketConnection.on("connect_error", (err) => {

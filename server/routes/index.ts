@@ -7,6 +7,9 @@ import Logout from "../controller/logout";
 import UpdateUserDetails from "../controller/updateUserDetails";
 import SearchUsers from "../controller/searchUser";
 import GetUsers from "../controller/getUsers";
+import GetConversation from "../controller/getConversation";
+import GetConversations from "../controller/getConversations";
+import GetMessages from "../controller/getMessages";
 import Login from "../controller/loginUser";
 
 const routes = express.Router();
@@ -29,5 +32,15 @@ routes.put("/updateUserDetails", UpdateUserDetails);
 routes.get("/users", GetUsers);
 // search users
 routes.get("/users/search", SearchUsers);
+// get all conversations
+routes.get("/conversations", GetConversations);
+// get conversation
+routes.get("/conversation/:userId", GetConversation);
+// get messages
+routes.get("/messages/:conversationId", GetMessages);
+// test endpoint
+routes.get("/test", (req, res) => {
+  res.json({ message: "API is working", timestamp: new Date().toISOString() });
+});
 
 export default routes;

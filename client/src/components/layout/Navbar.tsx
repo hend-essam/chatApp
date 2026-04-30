@@ -24,28 +24,28 @@ const Navbar = () => {
       </Link>
 
       <Stack direction="row" spacing={2}>
-        <Button
-          component={Link}
-          href="/login"
-          variant="text"
-          sx={{
-            color: "#fff",
-            "&:hover": { backgroundColor: "rgba(255,255,255,0.1)" },
-          }}
-        >
-          Login
-        </Button>
-        <Button
-          component={Link}
-          href="/register"
-          variant="contained"
-          sx={{
-            backgroundColor: "#9a885e",
-            "&:hover": { backgroundColor: "#b89f6a" },
-          }}
-        >
-          Register
-        </Button>
+        <Link href="/login" passHref style={{ textDecoration: "none" }}>
+          <Button
+            variant="text"
+            sx={{
+              color: "#fff",
+              "&:hover": { backgroundColor: "rgba(255,255,255,0.1)" },
+            }}
+          >
+            Login
+          </Button>
+        </Link>
+        <Link href="/register" passHref style={{ textDecoration: "none" }}>
+          <Button
+            variant="contained"
+            sx={{
+              backgroundColor: "#9a885e",
+              "&:hover": { backgroundColor: "#b89f6a" },
+            }}
+          >
+            Register
+          </Button>
+        </Link>
       </Stack>
     </Stack>
   );

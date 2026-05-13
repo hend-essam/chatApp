@@ -7,21 +7,22 @@ import {
   BottomNavigation,
   BottomNavigationAction,
   Paper,
-  Drawer,
   IconButton,
 } from "@mui/material";
 import { SocketProvider } from "@/providers/SocketProvider";
-import { useState } from "react";
 import ChatIcon from "@mui/icons-material/Chat";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import SettingsIcon from "@mui/icons-material/Settings";
-import MenuIcon from "@mui/icons-material/Menu";
+import LogoutIcon from "@mui/icons-material/Logout";
 import { useRouter, usePathname } from "next/navigation";
+import { useDispatch } from "react-redux";
+import axios from "axios";
+import { logout } from "@/redux/slices/authSlice";
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
-  const [drawerOpen, setDrawerOpen] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
+  const dispatch = useDispatch();
 
   const getNavValue = () => {
     if (pathname.includes("/add-user")) return 1;
@@ -29,12 +30,20 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
     return 0;
   };
 
+  const handleLogout = async () => {
+    await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/logout`, {
+      withCredentials: true,
+    });
+    dispatch(logout());
+    router.push("/login");
+  };
+
   return (
     <AuthGuard>
       <SocketProvider>
         <ServerStatus />
         <Box sx={{ display: "flex", height: "100vh", overflow: "hidden" }}>
-          {/* Desktop Sidebar */}
+          {/* Desktop Sidebar - Only visible on desktop */}
           <Box
             sx={{
               display: { xs: "none", md: "block" },
@@ -44,18 +53,6 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
           >
             <Sidebar />
           </Box>
-
-          {/* Mobile Drawer */}
-          <Drawer
-            anchor="left"
-            open={drawerOpen}
-            onClose={() => setDrawerOpen(false)}
-            sx={{ display: { xs: "block", md: "none" } }}
-          >
-            <Box sx={{ width: 300 }}>
-              <Sidebar onClose={() => setDrawerOpen(false)} />
-            </Box>
-          </Drawer>
 
           {/* Main Content */}
           <Box
@@ -68,21 +65,18 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
             }}
           >
             {/* Mobile Header */}
-            <Paper
+            {/* <Paper
               elevation={2}
               sx={{
                 display: { xs: "flex", md: "none" },
                 p: 2,
                 alignItems: "center",
-                gap: 2,
+                justifyContent: "center",
                 borderRadius: 0,
               }}
             >
-              <IconButton onClick={() => setDrawerOpen(true)}>
-                <MenuIcon />
-              </IconButton>
-              <Box sx={{ fontWeight: 600, fontSize: "1.1rem" }}>Chat App</Box>
-            </Paper>
+              <Box sx={{ fontWeight: 600, fontSize: "1.1rem", color: "#1976d2" }}>Chat App</Box>
+            </Paper> */}
 
             {/* Content Area */}
             <Box sx={{ flexGrow: 1, overflow: "hidden" }}>{children}</Box>
@@ -96,8 +90,10 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
             bottom: 0,
             left: 0,
             right: 0,
-            display: { xs: "block", md: "none" },
+            display: { xs: "flex", md: "none" },
             zIndex: 1000,
+            alignItems: "center",
+            borderTop: "1px solid #e0e0e0",
           }}
           elevation={3}
         >
@@ -109,11 +105,22 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
               if (newValue === 2) router.push("/main/settings");
             }}
             showLabels
+            sx={{ flexGrow: 1 }}
           >
             <BottomNavigationAction label="Chats" icon={<ChatIcon />} />
             <BottomNavigationAction label="Add User" icon={<PersonAddIcon />} />
             <BottomNavigationAction label="Settings" icon={<SettingsIcon />} />
           </BottomNavigation>
+          <IconButton
+            onClick={handleLogout}
+            sx={{
+              color: "#d32f2f",
+              mx: 1,
+              flexShrink: 0,
+            }}
+          >
+            <LogoutIcon />
+          </IconButton>
         </Paper>
       </SocketProvider>
     </AuthGuard>

@@ -62,7 +62,13 @@ const ServerStatus = () => {
   };
 
   return (
-    <Box sx={{ position: "fixed", top: 10, right: 10, zIndex: 1000 }}>
+    <Box sx={{ 
+      position: "fixed", 
+      top: 10, 
+      right: 10, 
+      zIndex: 1000,
+      display: { xs: "none", md: "block" }
+    }}>
       <Chip
         label={getStatusText()}
         color={getStatusColor()}

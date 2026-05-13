@@ -34,7 +34,7 @@ const ChatList = () => {
     try {
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_API_URL}/conversations`,
-        { withCredentials: true }
+        { withCredentials: true },
       );
       dispatch(setConversations(response.data.data || []));
     } catch (err: any) {
@@ -60,7 +60,9 @@ const ChatList = () => {
     if (!socket) return;
     const handleMessageUpdate = () => fetchConversations();
     socket.on("message", handleMessageUpdate);
-    return () => { socket.off("message", handleMessageUpdate); };
+    return () => {
+      socket.off("message", handleMessageUpdate);
+    };
   }, [socket, user?._id]);
 
   const getOtherUser = (conv: any) => {
@@ -76,7 +78,7 @@ const ChatList = () => {
   }
 
   return (
-    <List sx={{ width: "100%", overflowY: "auto" }}>
+    <List sx={{ overflowY: "auto", p: 1 }}>
       {conversations.map((conv: any) => {
         const otherUser = getOtherUser(conv);
         const lastMessage = conv.messages[0];
@@ -89,10 +91,11 @@ const ChatList = () => {
             onClick={() => router.push(`/main/${otherUser._id}`)}
             sx={{
               cursor: "pointer",
-              borderRadius: 2,
+              borderRadius: "12px",
               mb: 0.5,
-              backgroundColor: isActive ? "rgba(0, 0, 0, 0.08)" : "transparent",
-              "&:hover": { backgroundColor: "rgba(0, 0, 0, 0.04)" },
+              backgroundColor: isActive ? "#e3f2fd" : "transparent",
+              "&:hover": { backgroundColor: isActive ? "#e3f2fd" : "#f5f5f5" },
+              transition: "all 0.2s",
             }}
           >
             <ListItemAvatar>
@@ -107,7 +110,7 @@ const ChatList = () => {
                     width: 10,
                     height: 10,
                     borderRadius: "50%",
-                    border: "2px solid #F5F5DC",
+                    border: "2px solid #fff",
                   },
                 }}
               >
@@ -116,7 +119,13 @@ const ChatList = () => {
             </ListItemAvatar>
             <ListItemText
               primary={
-                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
                   <Typography variant="subtitle2" fontWeight={600}>
                     {otherUser.name}
                   </Typography>

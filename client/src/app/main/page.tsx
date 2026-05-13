@@ -1,21 +1,34 @@
 "use client";
 import { useSelector } from "react-redux";
-import { Stack, Typography } from "@mui/material";
+import { Stack, Typography, Box } from "@mui/material";
+import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 
 const DashboardPage = () => {
   const { user } = useSelector((state: any) => state.auth);
   const { onlineUsers } = useSelector((state: any) => state.user);
 
   return (
-    <Stack direction="row" sx={{ height: "100vh", width: "90%", m: "auto" }}>
-      <Typography variant="h4" sx={{ color: "#686666", m: "auto" }}>
-        Welcome, {user?.name}!<br /> Please select a chat.
-        <br />
-        <Typography variant="body1" sx={{ mt: 2 }}>
-          Online users: {onlineUsers.length}
+    <Box sx={{ 
+      height: '100%', 
+      display: 'flex', 
+      alignItems: 'center', 
+      justifyContent: 'center',
+      backgroundColor: '#f8f9fa',
+      p: 3
+    }}>
+      <Stack alignItems="center" spacing={2}>
+        <ChatBubbleOutlineIcon sx={{ fontSize: 80, color: '#1976d2', opacity: 0.3 }} />
+        <Typography variant="h5" sx={{ fontWeight: 600, color: '#333' }}>
+          Welcome, {user?.name}!
         </Typography>
-      </Typography>
-    </Stack>
+        <Typography variant="body1" color="text.secondary" textAlign="center">
+          Select a conversation to start messaging
+        </Typography>
+        <Typography variant="caption" color="text.secondary">
+          {onlineUsers.length} user{onlineUsers.length !== 1 ? 's' : ''} online
+        </Typography>
+      </Stack>
+    </Box>
   );
 };
 

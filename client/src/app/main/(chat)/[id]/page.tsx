@@ -44,41 +44,51 @@ const Chat = () => {
         const userRes = await axiosInstance.get("/users");
 
         const foundUser = userRes.data.data.find((u: any) => u._id === userId);
+        if (!foundUser) {
+          setError("User not found. Please check the user ID.");
+          setOtherUser(null);
+          setLoading(false);
+          return;
+        }
+        
         setOtherUser(foundUser);
         setLoading(false);
 
-        const convRes = await axiosInstance.get(`/conversation/${userId}`);
+        try {
+          const convRes = await axiosInstance.get(`/conversation/${userId}`);
+          const conv = convRes.data.data;
+          
+          if (conv?.messages) {
+            setMessages(conv.messages);
+            conversationIdRef.current = conv._id;
 
-        const conv = convRes.data.data;
-        if (conv?.messages) {
-          setMessages(conv.messages);
-          conversationIdRef.current = conv._id;
-
-          const unseenMessages = conv.messages.filter(
-            (msg: any) => msg.msgByUserId !== user._id && !msg.seen,
-          );
-          if (unseenMessages.length > 0 && socket) {
-            unseenMessages.forEach((msg: any) => {
-              socket.emit("seen", msg._id);
-            });
+            const unseenMessages = conv.messages.filter(
+              (msg: any) => msg.msgByUserId !== user._id && !msg.seen,
+            );
+            if (unseenMessages.length > 0 && socket) {
+              unseenMessages.forEach((msg: any) => {
+                socket.emit("seen", msg._id);
+              });
+            }
+          }
+        } catch (convErr: any) {
+          // If conversation not found (404), it's okay - user can start a new conversation
+          if (convErr.response?.status === 404) {
+            console.log("No existing conversation - user can start a new one");
+            setMessages([]);
+          } else {
+            console.error("Error fetching conversation:", convErr);
           }
         }
       } catch (err) {
         console.error("Error fetching data:", err);
-        // Handle different error cases
         if ((err as any).response?.status === 400) {
-          console.error("Invalid user ID - user not found");
           setError("User not found. Please check the user ID.");
           setOtherUser(null);
-        } else if ((err as any).response?.status === 404) {
-          console.error("Conversation not found");
-          setError("No conversation found with this user.");
-          setMessages([]);
         } else if ((err as any).response?.status === 401) {
-          console.error("Unauthorized");
           setError("You are not authorized to view this conversation.");
         } else {
-          setError("Failed to load conversation. Please try again.");
+          setError("Failed to load user data. Please try again.");
         }
         setLoading(false);
       }
@@ -164,10 +174,9 @@ const Chat = () => {
     return (
       <Stack
         sx={{
-          height: "100vh",
+          height: "100%",
           justifyContent: "center",
           alignItems: "center",
-          p: 4,
         }}
       >
         <Typography
@@ -281,15 +290,15 @@ const Chat = () => {
   }
 
   return (
-    <Stack sx={{ height: "100vh", width: "100%" }}>
+    <Stack sx={{ height: "100%", width: "100%" }}>
       <Paper
-        elevation={2}
+        elevation={0}
         sx={{
           p: 2,
           display: "flex",
           alignItems: "center",
           gap: 2,
-          borderRadius: 0,
+          borderBottom: "1px solid #e0e0e0",
         }}
       >
         <Badge
@@ -322,58 +331,83 @@ const Chat = () => {
           flexGrow: 1,
           overflowY: "auto",
           p: 2,
-          backgroundColor: "#f5f5f5",
+          backgroundColor: "#f8f9fa",
         }}
       >
-        {messages.map((msg: any, idx: number) => {
-          const isSender = msg.msgByUserId === user._id;
-          return (
-            <Box
-              key={msg._id || idx}
-              sx={{
-                display: "flex",
-                justifyContent: isSender ? "flex-end" : "flex-start",
-                mb: 1,
-              }}
-            >
-              <Paper
+        {messages.length === 0 ? (
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              height: '100%',
+              flexDirection: 'column',
+              gap: 1,
+            }}
+          >
+            <Typography variant="body1" color="text.secondary">
+              No messages yet
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              Start the conversation by sending a message
+            </Typography>
+          </Box>
+        ) : (
+          messages.map((msg: any, idx: number) => {
+            const isSender = msg.msgByUserId === user._id;
+            return (
+              <Box
+                key={msg._id || idx}
                 sx={{
-                  p: 1.5,
-                  maxWidth: "60%",
-                  backgroundColor: isSender ? "#1976d2" : "#fff",
-                  color: isSender ? "#fff" : "#000",
-                  borderRadius: 2,
+                  display: "flex",
+                  justifyContent: isSender ? "flex-end" : "flex-start",
+                  mb: 1.5,
                 }}
               >
-                <Typography variant="body1">{msg.text}</Typography>
-                <Typography
-                  variant="caption"
+                <Paper
+                  elevation={0}
                   sx={{
-                    display: "block",
-                    mt: 0.5,
-                    opacity: 0.7,
-                    fontSize: "0.7rem",
+                    p: 1.5,
+                    maxWidth: { xs: "75%", sm: "65%" },
+                    backgroundColor: isSender ? "#1976d2" : "#fff",
+                    color: isSender ? "#fff" : "#000",
+                    borderRadius: isSender
+                      ? "18px 18px 4px 18px"
+                      : "18px 18px 18px 4px",
+                    boxShadow: "0 1px 2px rgba(0,0,0,0.1)",
                   }}
                 >
-                  {new Date(msg.createdAt).toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </Typography>
-              </Paper>
-            </Box>
-          );
-        })}
+                  <Typography variant="body1">{msg.text}</Typography>
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      display: "block",
+                      mt: 0.5,
+                      opacity: 0.7,
+                      fontSize: "0.7rem",
+                    }}
+                  >
+                    {new Date(msg.createdAt).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </Typography>
+                </Paper>
+              </Box>
+            );
+          })
+        )}
         <div ref={messagesEndRef} />
       </Box>
 
       <Paper
-        elevation={3}
+        elevation={0}
         sx={{
           p: 2,
           display: "flex",
           gap: 1,
-          borderRadius: 0,
+          borderTop: "1px solid #e0e0e0",
+          backgroundColor: "#fff",
         }}
       >
         <TextField
@@ -384,8 +418,22 @@ const Chat = () => {
           onKeyPress={(e) => e.key === "Enter" && handleSend()}
           size="small"
           disabled={loading}
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              borderRadius: "24px",
+              backgroundColor: "#f8f9fa",
+            },
+          }}
         />
-        <IconButton color="primary" onClick={handleSend}>
+        <IconButton
+          color="primary"
+          onClick={handleSend}
+          sx={{
+            backgroundColor: "#1976d2",
+            color: "#fff",
+            "&:hover": { backgroundColor: "#1565c0" },
+          }}
+        >
           <SendIcon />
         </IconButton>
       </Paper>

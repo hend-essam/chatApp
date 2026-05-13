@@ -1,5 +1,6 @@
-import { Stack, Button, Typography } from "@mui/material";
+import { Stack, Button, Typography, Box } from "@mui/material";
 import Link from "next/link";
+import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 
 const Navbar = () => {
   return (
@@ -7,20 +8,22 @@ const Navbar = () => {
       direction="row"
       alignItems="center"
       justifyContent="space-between"
-      sx={{ color: "#fff" }}
       component="nav"
     >
       <Link href="/" passHref style={{ textDecoration: "none" }}>
-        <Typography
-          variant="h5"
-          sx={{
-            color: "#fff",
-            fontWeight: "bold",
-            cursor: "pointer",
-          }}
-        >
-          CHATIFY
-        </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, cursor: 'pointer' }}>
+          <ChatBubbleOutlineIcon sx={{ color: "#1976d2", fontSize: 32 }} />
+          <Typography
+            variant="h5"
+            sx={{
+              color: "#1976d2",
+              fontWeight: 700,
+              letterSpacing: '-0.5px',
+            }}
+          >
+            Chat App
+          </Typography>
+        </Box>
       </Link>
 
       <Stack direction="row" spacing={2}>
@@ -28,8 +31,15 @@ const Navbar = () => {
           <Button
             variant="text"
             sx={{
-              color: "#fff",
-              "&:hover": { backgroundColor: "rgba(255,255,255,0.1)" },
+              color: "#666",
+              textTransform: "none",
+              fontSize: "1rem",
+              fontWeight: 600,
+              px: 3,
+              "&:hover": { 
+                backgroundColor: "#f5f5f5",
+                color: "#1976d2",
+              },
             }}
           >
             Login
@@ -39,8 +49,17 @@ const Navbar = () => {
           <Button
             variant="contained"
             sx={{
-              backgroundColor: "#9a885e",
-              "&:hover": { backgroundColor: "#b89f6a" },
+              backgroundColor: "#1976d2",
+              textTransform: "none",
+              fontSize: "1rem",
+              fontWeight: 600,
+              px: 3,
+              borderRadius: "8px",
+              boxShadow: "none",
+              "&:hover": { 
+                backgroundColor: "#1565c0",
+                boxShadow: "0 2px 8px rgba(25, 118, 210, 0.3)",
+              },
             }}
           >
             Register

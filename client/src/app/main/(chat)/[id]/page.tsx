@@ -50,14 +50,14 @@ const Chat = () => {
           setLoading(false);
           return;
         }
-        
+
         setOtherUser(foundUser);
         setLoading(false);
 
         try {
           const convRes = await axiosInstance.get(`/conversation/${userId}`);
           const conv = convRes.data.data;
-          
+
           if (conv?.messages) {
             setMessages(conv.messages);
             conversationIdRef.current = conv._id;
@@ -298,6 +298,7 @@ const Chat = () => {
           display: "flex",
           alignItems: "center",
           gap: 2,
+          borderRadius: 0,
           borderBottom: "1px solid #e0e0e0",
         }}
       >
@@ -337,11 +338,11 @@ const Chat = () => {
         {messages.length === 0 ? (
           <Box
             sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              height: '100%',
-              flexDirection: 'column',
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              height: "100%",
+              flexDirection: "column",
               gap: 1,
             }}
           >
@@ -406,6 +407,7 @@ const Chat = () => {
           p: 2,
           display: "flex",
           gap: 1,
+          borderRadius: 0,
           borderTop: "1px solid #e0e0e0",
           backgroundColor: "#fff",
         }}

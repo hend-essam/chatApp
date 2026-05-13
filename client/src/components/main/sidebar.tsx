@@ -67,8 +67,8 @@ const Sidebar = ({ onClose }: SidebarProps) => {
       }}
     >
       {/* Header */}
-      <Box sx={{ p: 2, borderBottom: "1px solid #e0e0e0", flexShrink: 0 }}>
-        <Stack
+      <Box sx={{ p: "21px", borderBottom: "1px solid #e0e0e0", flexShrink: 0 }}>
+        {/* <Stack
           direction="row"
           alignItems="center"
           justifyContent="space-between"
@@ -85,7 +85,7 @@ const Sidebar = ({ onClose }: SidebarProps) => {
               <CloseIcon />
             </IconButton>
           )}
-        </Stack>
+        </Stack> */}
 
         {user && (
           <Stack
@@ -154,6 +154,11 @@ const Sidebar = ({ onClose }: SidebarProps) => {
             >
               <RefreshIcon fontSize="small" />
             </IconButton>
+            {onClose && (
+              <IconButton onClick={onClose} size="small">
+                <CloseIcon />
+              </IconButton>
+            )}
           </Stack>
         )}
       </Box>
@@ -171,7 +176,7 @@ const Sidebar = ({ onClose }: SidebarProps) => {
       </Box>
 
       {/* Footer */}
-      <Box sx={{ p: 2, borderTop: "1px solid #e0e0e0", flexShrink: 0 }}>
+      <Box sx={{ p: "18px", borderTop: "1px solid #e0e0e0", flexShrink: 0 }}>
         <Button
           fullWidth
           variant="outlined"

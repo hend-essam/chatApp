@@ -9,16 +9,21 @@ const Navbar = () => {
       alignItems="center"
       justifyContent="space-between"
       component="nav"
+      sx={{
+        flexWrap: { xs: 'wrap', sm: 'nowrap' },
+        gap: { xs: 2, sm: 0 },
+      }}
     >
       <Link href="/" passHref style={{ textDecoration: "none" }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, cursor: 'pointer' }}>
-          <ChatBubbleOutlineIcon sx={{ color: "#1976d2", fontSize: 32 }} />
+          <ChatBubbleOutlineIcon sx={{ color: "#1976d2", fontSize: { xs: 28, sm: 32 } }} />
           <Typography
             variant="h5"
             sx={{
               color: "#1976d2",
               fontWeight: 700,
               letterSpacing: '-0.5px',
+              fontSize: { xs: '1.25rem', sm: '1.5rem' },
             }}
           >
             Chatify
@@ -26,16 +31,16 @@ const Navbar = () => {
         </Box>
       </Link>
 
-      <Stack direction="row" spacing={2}>
+      <Stack direction="row" spacing={{ xs: 1, sm: 2 }}>
         <Link href="/login" passHref style={{ textDecoration: "none" }}>
           <Button
             variant="text"
             sx={{
               color: "#666",
               textTransform: "none",
-              fontSize: "1rem",
+              fontSize: { xs: '0.875rem', sm: '1rem' },
               fontWeight: 600,
-              px: 3,
+              px: { xs: 2, sm: 3 },
               "&:hover": { 
                 backgroundColor: "#f5f5f5",
                 color: "#1976d2",
@@ -51,9 +56,9 @@ const Navbar = () => {
             sx={{
               backgroundColor: "#1976d2",
               textTransform: "none",
-              fontSize: "1rem",
+              fontSize: { xs: '0.875rem', sm: '1rem' },
               fontWeight: 600,
-              px: 3,
+              px: { xs: 2, sm: 3 },
               borderRadius: "8px",
               boxShadow: "none",
               "&:hover": { 

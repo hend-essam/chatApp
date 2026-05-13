@@ -49,11 +49,16 @@ const Login = () => {
       if (response.data.success) {
         setSuccessMessage("✅ Login successful! Redirecting...");
 
+        // Store token in both cookie and localStorage as fallback
+        const token = response.data.data.token;
+        document.cookie = `token=${token}; path=/; max-age=${24 * 60 * 60}`;
+        localStorage.setItem('token', token);
+
         // Dispatch login action to update Redux state
         dispatch(
           login({
             user: response.data.data.user,
-            token: response.data.data.token,
+            token: token,
           }),
         );
 

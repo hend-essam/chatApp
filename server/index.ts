@@ -28,10 +28,22 @@ if (missingEnvVars.length > 0) {
 
 // CORS Configuration
 const corsOptions: cors.CorsOptions = {
-  origin: process.env.FRONTEND_URL,
+  origin: function (origin, callback) {
+    const allowedOrigins = [
+      process.env.FRONTEND_URL as string,
+      "http://localhost:3000",
+      "http://localhost:3001",
+    ];
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+  allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
+  exposedHeaders: ["Set-Cookie"],
 };
 
 app.use(cors(corsOptions));
@@ -50,10 +62,10 @@ app.get("/", (req: Request, res: Response) => {
 
 // Test API endpoint
 app.get("/api/health", (req: Request, res: Response) => {
-  res.json({ 
-    message: "API is working", 
+  res.json({
+    message: "API is working",
     timestamp: new Date().toISOString(),
-    port: PORT 
+    port: PORT,
   });
 });
 

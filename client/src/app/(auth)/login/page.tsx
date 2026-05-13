@@ -1,5 +1,5 @@
 "use client";
-import { Stack, Button, Alert } from "@mui/material";
+import { Stack, Button, Alert, Box } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import axios from "axios";
@@ -49,11 +49,16 @@ const Login = () => {
       if (response.data.success) {
         setSuccessMessage("✅ Login successful! Redirecting...");
 
+        // Store token in both cookie and localStorage as fallback
+        const token = response.data.data.token;
+        document.cookie = `token=${token}; path=/; max-age=${24 * 60 * 60}`;
+        localStorage.setItem("token", token);
+
         // Dispatch login action to update Redux state
         dispatch(
           login({
             user: response.data.data.user,
-            token: response.data.data.token,
+            token: token,
           }),
         );
 
@@ -80,60 +85,94 @@ const Login = () => {
   };
 
   return (
-    <Stack height="100vh" alignItems="center" justifyContent="center">
-      <Stack gap={5} p={2} width={{ xs: "90%", md: "400px" }}>
+    <Box
+      sx={{
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#f8f9fa",
+        p: 2,
+      }}
+    >
+      <Box
+        sx={{
+          width: "100%",
+          maxWidth: "450px",
+          backgroundColor: "#fff",
+          borderRadius: "16px",
+          boxShadow: "0 4px 24px rgba(0,0,0,0.08)",
+          p: 4,
+        }}
+      >
         {/* Header */}
-        <AuthHeader title="Login" />
+        <AuthHeader title="Welcome Back" />
 
         {/* Alerts */}
         {formError && (
           <Alert
             severity="error"
-            sx={{ mb: 2 }}
+            sx={{ mb: 2, mt: 3, borderRadius: "12px" }}
             onClose={() => setFormError("")}
           >
             {formError}
           </Alert>
         )}
         {successMessage && (
-          <Alert severity="success" sx={{ mb: 2 }}>
+          <Alert severity="success" sx={{ mb: 2, mt: 3, borderRadius: "12px" }}>
             {successMessage}
           </Alert>
         )}
 
         {/* Login Form */}
-        <Stack component="form" gap={3} onSubmit={handleSubmit(onSubmit)}>
+        <Stack
+          component="form"
+          gap={3}
+          onSubmit={handleSubmit(onSubmit)}
+          sx={{ mt: 3 }}
+        >
           <Stack spacing={2} direction="column" gap={2}>
             <EmailInput register={register} error={errors.email} />
             <PasswordInput register={register} error={errors.password} />
           </Stack>
 
-          <Stack direction="row" gap={2}>
-            <LoadingButton type="submit" loading={loading} sx={{ flex: 1 }}>
-              Login
-            </LoadingButton>
-            <Button
-              href="/forget-password"
-              variant="outlined"
-              sx={{
-                border: "1px solid #b89f6a",
-                fontWeight: "semi-bold",
-                color: "black",
-                flex: 1,
-              }}
-            >
-              Forget Password?
-            </Button>
-          </Stack>
+          <LoadingButton
+            type="submit"
+            loading={loading}
+            fullWidth
+            sx={{
+              py: 1.5,
+              borderRadius: "12px",
+              textTransform: "none",
+              fontSize: "1rem",
+              fontWeight: 600,
+            }}
+          >
+            Login
+          </LoadingButton>
+
+          <Button
+            href="/forget-password"
+            variant="text"
+            sx={{
+              textTransform: "none",
+              color: "#1976d2",
+              fontWeight: 600,
+            }}
+          >
+            Forgot Password?
+          </Button>
         </Stack>
 
-        <AuthLinkPrompt
-          promptText="Don't have an account?"
-          linkText="Register here"
-          href="/register"
-        />
-      </Stack>
-    </Stack>
+        <Box sx={{ mt: 3 }}>
+          <AuthLinkPrompt
+            promptText="Don't have an account?"
+            linkText="Register here"
+            href="/register"
+          />
+        </Box>
+      </Box>
+    </Box>
   );
 };
 

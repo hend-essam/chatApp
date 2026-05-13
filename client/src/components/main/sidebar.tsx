@@ -8,21 +8,27 @@ import {
   Badge,
   IconButton,
   Tooltip,
+  Box,
+  Divider,
 } from "@mui/material";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
-import ChatIcon from "@mui/icons-material/ChatBubbleOutline";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import LogoutIcon from "@mui/icons-material/Logout";
 import RefreshIcon from "@mui/icons-material/Refresh";
+import CloseIcon from "@mui/icons-material/Close";
 import axios from "axios";
 import { logout } from "@/redux/slices/authSlice";
 import { setConversations } from "@/redux/slices/messageSlice";
 import ChatList from "./ChatList";
 import { useSocket } from "@/providers/SocketProvider";
 
-const Sidebar = () => {
+interface SidebarProps {
+  onClose?: () => void;
+}
+
+const Sidebar = ({ onClose }: SidebarProps) => {
   const pathname = usePathname();
   const router = useRouter();
   const dispatch = useDispatch();
@@ -54,127 +60,146 @@ const Sidebar = () => {
   return (
     <Stack
       sx={{
-        maxHeight: "100vh",
-        padding: "32px 24px",
-        borderTopRightRadius: "50px",
-        borderBottomRightRadius: "50px",
-        backgroundColor: "#F5F5DC",
-        boxShadow: "2px 0px 10px rgba(0,0,0,0.05)",
+        height: "100vh",
+        maxWidth: "100%",
+        minWidth: 0,
+        backgroundColor: "#fff",
+        borderRight: "1px solid #e0e0e0",
       }}
     >
-      {user && (
-        <Stack direction="row" alignItems="center" spacing={2} sx={{ mb: 4 }}>
-          <Link href="/main/settings" style={{ textDecoration: "none" }}>
-            <Badge
-              overlap="circular"
-              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-              variant="dot"
-              invisible={!onlineUsers.includes(user._id)}
-              sx={{
-                "& .MuiBadge-badge": {
-                  backgroundColor: "#44b700",
-                  width: 12,
-                  height: 12,
-                  borderRadius: "50%",
-                  border: "2px solid #fff",
-                },
-              }}
-            >
-              <Avatar
-                src={user.profilePic}
-                alt="avatar"
-                sx={{
-                  width: "40px",
-                  height: "40px",
-                  border: "2px solid #fff",
-                  boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
-                }}
-              />
-            </Badge>
-          </Link>
-          <Typography
-            variant="subtitle1"
-            sx={{
-              fontWeight: 700,
-              color: "#333",
-              letterSpacing: "0.5px",
-              textTransform: "capitalize",
-            }}
-          >
-            {user.name}
-          </Typography>
-          <PersonAddIcon
-            onClick={() => router.push("/main/add-user")}
-            fontSize="small"
-            sx={{
-              color: "#333",
-              cursor: "pointer",
-              transition: "all 0.2s",
-              "&:hover": { color: "#b89f6a" },
-            }}
-          />
-          <Tooltip
-            title={`Socket: ${isConnected ? "Connected" : "Disconnected"} | Conversations: ${conversations.length}`}
-          >
-            <IconButton
-              onClick={handleRefresh}
-              size="small"
-              sx={{
-                color: isConnected ? "#44b700" : "#d32f2f",
-                transition: "all 0.2s",
-                "&:hover": { transform: "rotate(180deg)" },
-              }}
-            >
-              <RefreshIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
-        </Stack>
-      )}
-
-      <Stack spacing={2} flexGrow={1} sx={{ overflowY: "auto" }}>
-        <ChatList />
-      </Stack>
-
-      <Stack
-        direction="row"
-        alignItems="center"
-        justifyContent="space-between"
-        sx={{ borderTop: "1px solid rgba(0,0,0,0.05)" }}
+      {/* Header */}
+      <Box
+        sx={{
+          p: "21px",
+          borderBottom: "1px solid #e0e0e0",
+          flexShrink: 0,
+          minWidth: 0,
+        }}
       >
+        {/* <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+          sx={{ mb: 2 }}
+        >
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 700, color: "#1976d2", whiteSpace: "nowrap" }}
+          >
+            Messages
+          </Typography>
+          {onClose && (
+            <IconButton onClick={onClose} size="small">
+              <CloseIcon />
+            </IconButton>
+          )}
+        </Stack> */}
+
+        {user && (
+          <Stack
+            direction="row"
+            alignItems="center"
+            spacing={1}
+            sx={{ minWidth: 0, width: "100%" }}
+          >
+            <Link
+              href="/main/settings"
+              style={{ textDecoration: "none", flexShrink: 0 }}
+            >
+              <Badge
+                overlap="circular"
+                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                variant="dot"
+                invisible={!onlineUsers.includes(user._id)}
+                sx={{
+                  "& .MuiBadge-badge": {
+                    backgroundColor: "#44b700",
+                    width: 10,
+                    height: 10,
+                    borderRadius: "50%",
+                    border: "2px solid #fff",
+                  },
+                }}
+              >
+                <Avatar
+                  src={user.profilePic}
+                  alt="avatar"
+                  sx={{ width: 40, height: 40 }}
+                />
+              </Badge>
+            </Link>
+            <Box sx={{ flexGrow: 1, minWidth: 0, overflow: "hidden" }}>
+              <Typography
+                variant="subtitle2"
+                sx={{
+                  fontWeight: 600,
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                  maxWidth: "100%",
+                  display: "block",
+                }}
+              >
+                {user.name}
+              </Typography>
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                sx={{ whiteSpace: "nowrap" }}
+              >
+                {isConnected ? "Online" : "Offline"}
+              </Typography>
+            </Box>
+            <Box sx={{ display: "flex", gap: 0.5, flexShrink: 0 }}>
+              <IconButton
+                size="small"
+                onClick={() => router.push("/main/add-user")}
+                sx={{ color: "#1976d2" }}
+              >
+                <PersonAddIcon fontSize="small" />
+              </IconButton>
+              <IconButton
+                size="small"
+                onClick={handleRefresh}
+                sx={{ color: isConnected ? "#44b700" : "#d32f2f" }}
+              >
+                <RefreshIcon fontSize="small" />
+              </IconButton>
+              {onClose && (
+                <IconButton onClick={onClose} size="small">
+                  <CloseIcon />
+                </IconButton>
+              )}
+            </Box>
+          </Stack>
+        )}
+      </Box>
+
+      {/* Chat List */}
+      <Box
+        sx={{
+          flexGrow: 1,
+          overflowY: "auto",
+          overflowX: "hidden",
+          minWidth: 0,
+        }}
+      >
+        <ChatList />
+      </Box>
+
+      {/* Footer */}
+      <Box sx={{ p: "18px", borderTop: "1px solid #e0e0e0", flexShrink: 0 }}>
         <Button
-          variant="text"
+          fullWidth
+          variant="outlined"
+          color="error"
           startIcon={<LogoutIcon />}
           onClick={handleLogout}
-          sx={{
-            color: "#d32f2f",
-            textTransform: "none",
-            fontWeight: "bold",
-            borderRadius: "12px",
-            width: "100%",
-            "&:hover": { backgroundColor: "rgba(211, 47, 47, 0.05)" },
-          }}
+          sx={{ textTransform: "none" }}
         >
           Logout
         </Button>
-
-        {/* <Link href="/main/settings">
-          <IconButton
-            sx={{
-              color:
-                pathname === "/main/settings"
-                  ? "primary.main"
-                  : "text.secondary",
-              backgroundColor:
-                pathname === "/main/settings"
-                  ? "rgba(0, 0, 0, 0.05)"
-                  : "transparent",
-              "&:hover": { backgroundColor: "rgba(0, 0, 0, 0.03)" },
-            }}
-          >
-            <SettingsIcon />
-          </IconButton>
-        </Link> */}
-      </Stack>
+      </Box>
     </Stack>
   );
 };

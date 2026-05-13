@@ -2,10 +2,10 @@ import Navbar from "../components/layout/Navbar";
 import { Stack, Button, Typography, Box, Container } from "@mui/material";
 import Link from "next/link";
 import Image from "next/image";
-import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
-import SpeedIcon from '@mui/icons-material/Speed';
-import SecurityIcon from '@mui/icons-material/Security';
-import GroupIcon from '@mui/icons-material/Group';
+import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
+import SpeedIcon from "@mui/icons-material/Speed";
+import SecurityIcon from "@mui/icons-material/Security";
+import GroupIcon from "@mui/icons-material/Group";
 
 const Home = () => {
   return (
@@ -19,7 +19,13 @@ const Home = () => {
       }}
     >
       {/* Navbar */}
-      <Box sx={{ backgroundColor: "#fff", borderBottom: "1px solid #e0e0e0", py: 2 }}>
+      <Box
+        sx={{
+          backgroundColor: "#fff",
+          borderBottom: "1px solid #e0e0e0",
+          py: 2,
+        }}
+      >
         <Container maxWidth="lg">
           <Navbar />
         </Container>
@@ -45,10 +51,18 @@ const Home = () => {
               >
                 Connect with ease and chat
               </Typography>
-              <Typography variant="h6" sx={{ mb: 4, color: "#666", lineHeight: 1.6 }}>
-                Real-time messaging for efficient communication. Stay connected with your team and friends.
+              <Typography
+                variant="h6"
+                sx={{ mb: 4, color: "#666", lineHeight: 1.6 }}
+              >
+                Real-time messaging for efficient communication. Stay connected
+                with your team and friends.
               </Typography>
-              <Link href="/register" passHref style={{ textDecoration: 'none' }}>
+              <Link
+                href="/register"
+                passHref
+                style={{ textDecoration: "none" }}
+              >
                 <Button
                   variant="contained"
                   size="large"
@@ -61,7 +75,7 @@ const Home = () => {
                     textTransform: "none",
                     fontWeight: 600,
                     boxShadow: "0 4px 12px rgba(25, 118, 210, 0.3)",
-                    "&:hover": { 
+                    "&:hover": {
                       backgroundColor: "#1565c0",
                       boxShadow: "0 6px 16px rgba(25, 118, 210, 0.4)",
                     },
@@ -72,21 +86,19 @@ const Home = () => {
               </Link>
             </Box>
 
-            <Box sx={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
+            <Box sx={{ flex: 1, display: "flex", justifyContent: "center" }}>
               <Box
                 sx={{
-                  position: 'relative',
-                  width: { xs: '100%', md: '400px' },
-                  height: { xs: '300px', md: '400px' },
+                  position: "relative",
+                  width: { xs: "100%" },
                 }}
               >
                 <img
-                  src="/assets/cat.png"
+                  src="/assets/chatify.png"
                   alt="Chat illustration"
                   style={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'contain',
+                    maxWidth: "100%",
+                    objectFit: "contain",
                     borderRadius: "16px",
                   }}
                 />
@@ -110,10 +122,7 @@ const Home = () => {
           >
             Why Choose Our Chat App?
           </Typography>
-          <Stack
-            direction={{ xs: "column", md: "row" }}
-            spacing={4}
-          >
+          <Stack direction={{ xs: "column", md: "row" }} spacing={4}>
             {[
               {
                 icon: <SpeedIcon sx={{ fontSize: 48, color: "#1976d2" }} />,
@@ -165,8 +174,12 @@ const Home = () => {
         <Container maxWidth="md">
           <Box sx={{ textAlign: "center", color: "#fff" }}>
             <ChatBubbleOutlineIcon sx={{ fontSize: 64, mb: 3, opacity: 0.9 }} />
-            <Typography variant="h5" sx={{ mb: 3, fontStyle: "italic", lineHeight: 1.6 }}>
-              "Experience the power of instant messaging. Stay connected, share moments, and communicate effortlessly."
+            <Typography
+              variant="h5"
+              sx={{ mb: 3, fontStyle: "italic", lineHeight: 1.6 }}
+            >
+              "Experience the power of instant messaging. Stay connected, share
+              moments, and communicate effortlessly."
             </Typography>
             <Stack
               direction="row"
@@ -195,10 +208,12 @@ const Home = () => {
       </Box>
 
       {/* Footer */}
-      <Box sx={{ py: 4, backgroundColor: "#fff", borderTop: "1px solid #e0e0e0" }}>
+      <Box
+        sx={{ py: 4, backgroundColor: "#fff", borderTop: "1px solid #e0e0e0" }}
+      >
         <Container maxWidth="lg">
           <Typography variant="body2" color="text.secondary" textAlign="center">
-            © 2024 Chat App. All rights reserved.
+            © 2024 Chatify. All rights reserved.
           </Typography>
         </Container>
       </Box>

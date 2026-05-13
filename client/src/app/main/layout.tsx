@@ -75,7 +75,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
                 borderRadius: 0,
               }}
             >
-              <Box sx={{ fontWeight: 600, fontSize: "1.1rem", color: "#1976d2" }}>Chat App</Box>
+              <Box sx={{ fontWeight: 600, fontSize: "1.1rem", color: "#1976d2" }}>Chatify</Box>
             </Paper> */}
 
             {/* Content Area */}

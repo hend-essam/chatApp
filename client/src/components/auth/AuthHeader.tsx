@@ -1,6 +1,7 @@
 "use client";
-import { Stack, Typography } from "@mui/material";
+import { Stack, Typography, Box } from "@mui/material";
 import Link from "next/link";
+import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 
 interface AuthHeaderProps {
   title?: string;
@@ -10,27 +11,30 @@ interface AuthHeaderProps {
 
 const AuthHeader = ({
   title,
-  withLine = true,
+  withLine = false,
   link = "/",
 }: AuthHeaderProps) => {
   return (
-    <Stack
-      direction="row"
-      alignItems="center"
-      gap={2}
-      borderBottom={withLine ? "3px double #b89f6a" : "none"}
-      p={1}
-    >
-      <Typography
-        variant="h3"
-        color="#b89f6a"
-        component={Link}
-        href={link}
-        sx={{ textDecoration: "none" }}
-      >
-        Chatify
-      </Typography>
-      <Typography variant="h5">{title}</Typography>
+    <Stack alignItems="center" gap={2}>
+      <Link href={link} style={{ textDecoration: "none" }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <ChatBubbleOutlineIcon sx={{ color: "#1976d2", fontSize: 40 }} />
+          <Typography
+            variant="h4"
+            sx={{
+              color: "#1976d2",
+              fontWeight: 700,
+            }}
+          >
+            Chatify
+          </Typography>
+        </Box>
+      </Link>
+      {title && (
+        <Typography variant="h5" sx={{ fontWeight: 600, color: "#333" }}>
+          {title}
+        </Typography>
+      )}
     </Stack>
   );
 };

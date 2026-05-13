@@ -33,15 +33,25 @@ const LoadingButton = ({
   ...props
 }: LoadingButtonProps) => {
   const defaultStyles = {
-    fontWeight: "semi-bold",
+    fontWeight: 600,
+    textTransform: "none" as const,
+    borderRadius: "12px",
+    py: 1.5,
     ...(variant === "contained" && {
-      backgroundColor: "#b89f6a",
-      "&:hover": { backgroundColor: "#a08658" },
+      backgroundColor: "#1976d2",
+      boxShadow: "none",
+      "&:hover": { 
+        backgroundColor: "#1565c0",
+        boxShadow: "0 2px 8px rgba(25, 118, 210, 0.3)",
+      },
     }),
     ...(variant === "outlined" && {
-      border: "1px solid #b89f6a",
-      color: "black",
-      "&:hover": { borderColor: "#a08658" },
+      border: "1px solid #e0e0e0",
+      color: "#666",
+      "&:hover": { 
+        borderColor: "#999",
+        backgroundColor: "#f5f5f5",
+      },
     }),
   };
 

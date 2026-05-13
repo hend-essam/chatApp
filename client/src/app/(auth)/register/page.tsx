@@ -163,21 +163,37 @@ const Register = () => {
   };
 
   return (
-    <Stack height="100vh" alignItems="center" justifyContent="center">
-      <Stack gap={3} p={2} width={{ xs: "90%", md: "500px" }}>
+    <Box sx={{ 
+      minHeight: "100vh", 
+      display: "flex", 
+      alignItems: "center", 
+      justifyContent: "center",
+      backgroundColor: "#f8f9fa",
+      p: 2
+    }}>
+      <Box
+        sx={{
+          width: "100%",
+          maxWidth: "550px",
+          backgroundColor: "#fff",
+          borderRadius: "16px",
+          boxShadow: "0 4px 24px rgba(0,0,0,0.08)",
+          p: 4,
+        }}
+      >
         {/* Header */}
-        <AuthHeader title="Register" />
+        <AuthHeader title="Create Account" />
 
         {/* Alerts */}
         {formError && (
-          <Alert severity="error" sx={{ mb: 1 }}>
+          <Alert severity="error" sx={{ mb: 1, mt: 3, borderRadius: "12px" }}>
             {formError}
           </Alert>
         )}
         {successMessage && (
           <Alert
             severity="success"
-            sx={{ mb: 1 }}
+            sx={{ mb: 1, mt: 3, borderRadius: "12px" }}
             onClose={() => setSuccessMessage("")}
           >
             {successMessage}
@@ -284,18 +300,31 @@ const Register = () => {
             </Stack>
           </Stack>
 
-          <LoadingButton type="submit" loading={loading} sx={{ flex: 1 }}>
+          <LoadingButton 
+            type="submit" 
+            loading={loading} 
+            fullWidth
+            sx={{ 
+              py: 1.5,
+              borderRadius: "12px",
+              textTransform: "none",
+              fontSize: "1rem",
+              fontWeight: 600,
+            }}
+          >
             Register
           </LoadingButton>
         </Stack>
 
-        <AuthLinkPrompt
-          promptText="Already have an account?"
-          linkText="Login"
-          href="/login"
-        />
-      </Stack>
-    </Stack>
+        <Box sx={{ mt: 3 }}>
+          <AuthLinkPrompt
+            promptText="Already have an account?"
+            linkText="Login"
+            href="/login"
+          />
+        </Box>
+      </Box>
+    </Box>
   );
 };
 

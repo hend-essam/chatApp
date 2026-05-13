@@ -21,7 +21,7 @@ const Navbar = () => {
               letterSpacing: '-0.5px',
             }}
           >
-            Chat App
+            Chatify
           </Typography>
         </Box>
       </Link>

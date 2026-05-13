@@ -6,14 +6,21 @@ import Footer from "../components/layout/Footer";
 
 const Home = () => {
   return (
-    <Box component="main">
+    <Box
+      component="main"
+      sx={{
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
       <Stack
         direction="column"
         gap="65px"
         bgcolor="black"
         py="24px"
+        flex={1}
         px={{ xs: "24px", md: "64px" }}
-        sx={{ minHeight: "75vh" }}
       >
         <Navbar />
 
@@ -111,7 +118,7 @@ const Home = () => {
         </Stack>
       </Stack>
 
-      <Footer />
+      {/* <Footer /> */}
     </Box>
   );
 };

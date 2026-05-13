@@ -61,13 +61,21 @@ const Sidebar = ({ onClose }: SidebarProps) => {
     <Stack
       sx={{
         height: "100vh",
+        maxWidth: "100%",
         minWidth: 0,
         backgroundColor: "#fff",
         borderRight: "1px solid #e0e0e0",
       }}
     >
       {/* Header */}
-      <Box sx={{ p: "21px", borderBottom: "1px solid #e0e0e0", flexShrink: 0 }}>
+      <Box
+        sx={{
+          p: "21px",
+          borderBottom: "1px solid #e0e0e0",
+          flexShrink: 0,
+          minWidth: 0,
+        }}
+      >
         {/* <Stack
           direction="row"
           alignItems="center"
@@ -92,7 +100,7 @@ const Sidebar = ({ onClose }: SidebarProps) => {
             direction="row"
             alignItems="center"
             spacing={1}
-            sx={{ minWidth: 0 }}
+            sx={{ minWidth: 0, width: "100%" }}
           >
             <Link
               href="/main/settings"
@@ -120,7 +128,7 @@ const Sidebar = ({ onClose }: SidebarProps) => {
                 />
               </Badge>
             </Link>
-            <Box sx={{ flexGrow: 1, minWidth: 0 }}>
+            <Box sx={{ flexGrow: 1, minWidth: 0, overflow: "hidden" }}>
               <Typography
                 variant="subtitle2"
                 sx={{
@@ -128,6 +136,8 @@ const Sidebar = ({ onClose }: SidebarProps) => {
                   overflow: "hidden",
                   textOverflow: "ellipsis",
                   whiteSpace: "nowrap",
+                  maxWidth: "100%",
+                  display: "block",
                 }}
               >
                 {user.name}
@@ -140,25 +150,27 @@ const Sidebar = ({ onClose }: SidebarProps) => {
                 {isConnected ? "Online" : "Offline"}
               </Typography>
             </Box>
-            <IconButton
-              size="small"
-              onClick={() => router.push("/main/add-user")}
-              sx={{ color: "#1976d2", flexShrink: 0 }}
-            >
-              <PersonAddIcon fontSize="small" />
-            </IconButton>
-            <IconButton
-              size="small"
-              onClick={handleRefresh}
-              sx={{ color: isConnected ? "#44b700" : "#d32f2f", flexShrink: 0 }}
-            >
-              <RefreshIcon fontSize="small" />
-            </IconButton>
-            {onClose && (
-              <IconButton onClick={onClose} size="small">
-                <CloseIcon />
+            <Box sx={{ display: "flex", gap: 0.5, flexShrink: 0 }}>
+              <IconButton
+                size="small"
+                onClick={() => router.push("/main/add-user")}
+                sx={{ color: "#1976d2" }}
+              >
+                <PersonAddIcon fontSize="small" />
               </IconButton>
-            )}
+              <IconButton
+                size="small"
+                onClick={handleRefresh}
+                sx={{ color: isConnected ? "#44b700" : "#d32f2f" }}
+              >
+                <RefreshIcon fontSize="small" />
+              </IconButton>
+              {onClose && (
+                <IconButton onClick={onClose} size="small">
+                  <CloseIcon />
+                </IconButton>
+              )}
+            </Box>
           </Stack>
         )}
       </Box>

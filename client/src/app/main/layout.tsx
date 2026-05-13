@@ -35,7 +35,13 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
         <ServerStatus />
         <Box sx={{ display: "flex", height: "100vh", overflow: "hidden" }}>
           {/* Desktop Sidebar */}
-          <Box sx={{ display: { xs: "none", md: "block" } }}>
+          <Box
+            sx={{
+              display: { xs: "none", md: "block" },
+              width: "250px",
+              flexShrink: 0,
+            }}
+          >
             <Sidebar />
           </Box>
 
@@ -46,7 +52,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
             onClose={() => setDrawerOpen(false)}
             sx={{ display: { xs: "block", md: "none" } }}
           >
-            <Box sx={{ width: 280 }}>
+            <Box sx={{ width: 300 }}>
               <Sidebar onClose={() => setDrawerOpen(false)} />
             </Box>
           </Drawer>

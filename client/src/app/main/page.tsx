@@ -62,10 +62,10 @@ const DashboardPage = () => {
           >
             Welcome back, {user?.name}!
           </Typography>
-          <Typography variant="body2" color="text.secondary">
+          {/* <Typography variant="body2" color="text.secondary">
             {onlineUsers.length} user{onlineUsers.length !== 1 ? "s" : ""}{" "}
             online now
-          </Typography>
+          </Typography> */}
         </Box>
 
         {/* Chats Section */}
@@ -221,13 +221,13 @@ const DashboardPage = () => {
         <Typography variant="body1" color="text.secondary">
           Select a conversation to start messaging
         </Typography>
-        <Typography
+        {/* <Typography
           variant="caption"
           color="text.secondary"
           sx={{ display: "block", mt: 1 }}
         >
           {onlineUsers.length} user{onlineUsers.length !== 1 ? "s" : ""} online
-        </Typography>
+        </Typography> */}
       </Box>
     </Box>
   );

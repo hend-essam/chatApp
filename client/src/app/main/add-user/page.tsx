@@ -209,7 +209,7 @@ const AddUser = () => {
                         {u.email}
                       </Typography>
                     </Box>
-                    <PersonAddIcon sx={{ color: "#1976d2", fontSize: 24 }} />
+                    {/* <PersonAddIcon sx={{ color: "#1976d2", fontSize: 24 }} /> */}
                   </Box>
                 </Paper>
               );

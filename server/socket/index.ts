@@ -10,7 +10,7 @@ dotenv.config();
 
 const app = express();
 const server = http.createServer(app);
-const onlineUsers = new Set<string>();
+const onlineUsers = new Map<string, Set<string>>();
 
 console.log(
   "[INIT] Setting up Socket.IO with FRONTEND_URL:",
@@ -41,10 +41,15 @@ io.use(async (socket, next) => {
     console.log("[Step 3] Token verified, user:", (user as any)?._id);
     (socket as any).user = user;
 
-    socket.join((user as any)?._id);
-    onlineUsers.add((user as any)?._id);
+    const userId = (user as any)?._id;
+    socket.join(userId);
+    
+    if (!onlineUsers.has(userId)) {
+      onlineUsers.set(userId, new Set());
+    }
+    onlineUsers.get(userId)!.add(socket.id);
 
-    io.emit("onlineUsers", Array.from(onlineUsers));
+    io.emit("onlineUsers", Array.from(onlineUsers.keys()));
 
     next();
   } catch (err) {
@@ -62,7 +67,7 @@ io.on("connection", (socket) => {
   const userId = (socket as any).user?._id;
   console.log("[Step 4] User ID:", userId);
   console.log("[Step 4] User joined room:", userId);
-  console.log("[Step 4] Emitting online users:", Array.from(onlineUsers));
+  console.log("[Step 4] Emitting online users:", Array.from(onlineUsers.keys()));
 
   // Ensure user is in their own room
   if (userId) {
@@ -70,7 +75,7 @@ io.on("connection", (socket) => {
     console.log("[Step 4] Confirmed user in room:", userId, "- Room size:", io.sockets.adapter.rooms.get(userId)?.size || 0);
   }
 
-  io.emit("onlineUsers", Array.from(onlineUsers));
+  io.emit("onlineUsers", Array.from(onlineUsers.keys()));
 
   // Test connection
   socket.on("test-connection", (data) => {
@@ -218,10 +223,13 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log("[Step 5] User disconnected, socket id:", socket.id);
     const userId = (socket as any).user?._id;
-    if (userId) {
-      onlineUsers.delete(userId);
-      console.log("[Step 5] Updated online users:", Array.from(onlineUsers));
-      io.emit("onlineUsers", Array.from(onlineUsers));
+    if (userId && onlineUsers.has(userId)) {
+      onlineUsers.get(userId)!.delete(socket.id);
+      if (onlineUsers.get(userId)!.size === 0) {
+        onlineUsers.delete(userId);
+      }
+      console.log("[Step 5] Updated online users:", Array.from(onlineUsers.keys()));
+      io.emit("onlineUsers", Array.from(onlineUsers.keys()));
     }
     // Leave all rooms
     socket.rooms.forEach(room => {

@@ -16,6 +16,7 @@ import SendIcon from "@mui/icons-material/Send";
 import axiosInstance from "@/lib/axios";
 import { useSocket } from "@/providers/SocketProvider";
 import { useAppDispatch } from "@/lib/hooks";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 const Chat = () => {
   const params = useParams();
@@ -302,6 +303,10 @@ const Chat = () => {
           borderBottom: "1px solid #e0e0e0",
         }}
       >
+        <ArrowBackIcon
+          sx={{ color: "#1976d2", cursor: "pointer" }}
+          onClick={() => window.history.back()}
+        />
         <Badge
           overlap="circular"
           anchorOrigin={{ vertical: "bottom", horizontal: "right" }}

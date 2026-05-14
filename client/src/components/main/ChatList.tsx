@@ -53,7 +53,11 @@ const ChatList = () => {
   };
 
   useEffect(() => {
-    if (user) fetchConversations();
+    if (user) {
+      fetchConversations();
+    } else {
+      dispatch(setConversations([]));
+    }
   }, [user]);
 
   useEffect(() => {
